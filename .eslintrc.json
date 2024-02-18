@@ -1,0 +1,7 @@
+{
+  "extends": ["next/core-web-vitals", "plugin:sort/recommended"],
+  "plugins": ["sort"],
+  "rules": {
+    "sort/imports": "off"
+  }
+}
