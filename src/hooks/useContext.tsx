@@ -1,15 +1,23 @@
 import { createContext, useContext, useReducer } from 'react';
 
-const DEFAULT_STATE = {};
+const DEFAULT_STATE = {
+  isRunning: false,
+  selectedScene: 'Conglomerates',
+  sound: 'wood-block-1.m4a',
+};
 
 export type State = typeof DEFAULT_STATE;
 
 export enum ActionType {
-  AddBall = 'ADD_BALL',
+  SetScene = 'SET_SCENE',
+  SetSound = 'SET_SOUND',
+  SetIsRunning = 'SET_IS_RUNNING',
 }
 
 interface Payloads {
-  [ActionType.AddBall]: null;
+  [ActionType.SetScene]: string;
+  [ActionType.SetSound]: string;
+  [ActionType.SetIsRunning]: boolean;
 }
 export type ActionMap<M extends Record<string, any>> = {
   [Key in keyof M]: M[Key] extends undefined
@@ -27,8 +35,21 @@ export type Actions = ActionMap<Payloads>[keyof ActionMap<Payloads>];
 const reducer = (state: typeof DEFAULT_STATE, action: Actions) => {
   console.log('action', action);
   switch (action.type) {
-    case ActionType.AddBall:
-      return state;
+    case ActionType.SetScene:
+      return {
+        ...state,
+        selectedScene: action.payload,
+      };
+    case ActionType.SetSound:
+      return {
+        ...state,
+        sound: action.payload,
+      };
+    case ActionType.SetIsRunning:
+      return {
+        ...state,
+        isRunning: action.payload,
+      };
     default:
       return state;
   }

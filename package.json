@@ -2,6 +2,7 @@
   "name": "bounce",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "typecheck": "tsc --noEmit",
@@ -9,7 +10,8 @@
     "format": "prettier --write src/**/*.{js,jsx,ts,tsx}",
     "validate": "npm run typecheck && npm run lint",
     "build": "npm run validate && vite build && cp web.config dist/",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate-audio-list": "node bin/generateAudioList.js"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
