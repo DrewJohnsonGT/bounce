@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Bodies, Body, Engine, Events, Render, Runner, World } from 'matter-js';
-import { COLORS, HEIGHT, WIDTH } from '~/constants';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
 import { useSound } from '~/hooks/useSound';
@@ -11,12 +11,16 @@ import {
 import {
   createHollowSquare,
   FRICTIONLESS_PERFECTLY_ELASTIC,
+  getRandomPositionInsideSquareContainer,
 } from '~/util/shapes';
 
-const SQUARE_SIZE = 10;
-const SQUARE_FORCE = 0.1;
+const SQUARE_SIZE = 20;
+const SQUARE_FORCE = 0.5;
 
 const CONTAINER_SIZE = 500;
+const CONTAINER_WALL_THICKNESS = 10;
+
+const CHANGE_OF_SQUARE_SPAWN_ON_COLLISION = 0.1;
 
 const createSquare = (x: number, y: number, color: string) => {
   return Bodies.rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE, {
@@ -27,16 +31,6 @@ const createSquare = (x: number, y: number, color: string) => {
       strokeStyle: getDarkerVersionOfColor(color),
     },
   });
-};
-
-const getRandomPositionInsideContainer = () => {
-  const offsetX = (WIDTH - CONTAINER_SIZE) / 2;
-  const offsetY = (HEIGHT - CONTAINER_SIZE) / 2;
-
-  const x = Math.random() * CONTAINER_SIZE + offsetX;
-  const y = Math.random() * CONTAINER_SIZE + offsetY;
-
-  return { x, y };
 };
 
 export const BouncingSquares = () => {
@@ -54,8 +48,8 @@ export const BouncingSquares = () => {
       engine,
       options: {
         background: COLORS.BLACK,
-        height: HEIGHT,
-        width: WIDTH,
+        height: CANVAS_HEIGHT,
+        width: CANVAS_WIDTH,
         wireframes: false,
       },
     });
@@ -63,25 +57,29 @@ export const BouncingSquares = () => {
     const squareSides = createHollowSquare({
       color: COLORS.WHITE,
       side: CONTAINER_SIZE,
-      thickness: 5,
-      x: WIDTH / 2,
-      y: HEIGHT / 2,
+      thickness: CONTAINER_WALL_THICKNESS,
+      x: CANVAS_WIDTH / 2,
+      y: CANVAS_HEIGHT / 2,
     });
 
-    const squareBody = createSquare(WIDTH / 2, HEIGHT / 2, COLORS.BLUE);
+    const squareBody = createSquare(
+      CANVAS_WIDTH / 2,
+      CANVAS_HEIGHT / 2,
+      COLORS.BLUE,
+    );
     const squareBody2 = createSquare(
-      WIDTH / 2 + SQUARE_SIZE,
-      HEIGHT / 2,
+      CANVAS_WIDTH / 2 + SQUARE_SIZE,
+      CANVAS_HEIGHT / 2,
       COLORS.GREEN,
     );
     const squareBody3 = createSquare(
-      WIDTH / 2,
-      HEIGHT / 2 + SQUARE_SIZE,
-      COLORS.YELLOW,
+      CANVAS_WIDTH / 2,
+      CANVAS_HEIGHT / 2 + SQUARE_SIZE,
+      COLORS.RED,
     );
     const squareBody4 = createSquare(
-      WIDTH / 2 + SQUARE_SIZE,
-      HEIGHT / 2 + SQUARE_SIZE,
+      CANVAS_WIDTH / 2 + SQUARE_SIZE,
+      CANVAS_HEIGHT / 2 + SQUARE_SIZE,
       COLORS.ORANGE,
     );
 
@@ -95,7 +93,7 @@ export const BouncingSquares = () => {
         }
         if (key.includes('static')) {
           const squareBody = bodyALabel === 'square' ? pair.bodyA : pair.bodyB;
-          if (Math.random() < 0.1) {
+          if (Math.random() < CHANGE_OF_SQUARE_SPAWN_ON_COLLISION) {
             Body.setStatic(squareBody, true);
             squareBody.label = 'static-square';
             createNewSquare();
@@ -144,7 +142,13 @@ export const BouncingSquares = () => {
 
   const createNewSquare = () => {
     const color = generateRandomColor();
-    const position = getRandomPositionInsideContainer();
+    const position = getRandomPositionInsideSquareContainer({
+      containerPosX: CANVAS_WIDTH / 2,
+      containerPosY: CANVAS_HEIGHT / 2,
+      containerSize: CONTAINER_SIZE,
+      containerWallThickness: CONTAINER_WALL_THICKNESS,
+      elementSize: SQUARE_SIZE,
+    });
     const squareBody = createSquare(position.x, position.y, color);
 
     World.add(engine.world, squareBody);
@@ -162,8 +166,8 @@ export const BouncingSquares = () => {
     <div
       ref={boxRef}
       style={{
-        height: HEIGHT,
-        width: WIDTH,
+        height: CANVAS_HEIGHT,
+        width: CANVAS_WIDTH,
       }}>
       <canvas ref={canvasRef} />
     </div>

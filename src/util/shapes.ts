@@ -64,3 +64,28 @@ export const createHollowSquare = ({
 
   return [top, bottom, left, right];
 };
+
+export const getRandomPositionInsideSquareContainer = ({
+  containerPosX,
+  containerPosY,
+  containerSize,
+  containerWallThickness,
+  elementSize = 0,
+}: {
+  containerSize: number;
+  containerWallThickness: number;
+  elementSize?: number;
+  containerPosX: number;
+  containerPosY: number;
+}) => {
+  const effectiveHalfSize =
+    containerSize / 2 - containerWallThickness - elementSize / 2;
+
+  const minX = containerPosX - effectiveHalfSize;
+  const minY = containerPosY - effectiveHalfSize;
+
+  const x = minX + Math.random() * (2 * effectiveHalfSize);
+  const y = minY + Math.random() * (2 * effectiveHalfSize);
+
+  return { x, y };
+};

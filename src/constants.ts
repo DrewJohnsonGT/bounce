@@ -1,5 +1,5 @@
-export const HEIGHT = 960;
-export const WIDTH = 540;
+export const CANVAS_HEIGHT = 960;
+export const CANVAS_WIDTH = 540;
 
 export const COLORS = {
   BLACK: '#000',
