@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
 import { Bodies, Body, Engine, Events, Render, Runner, World } from 'matter-js';
+import { SceneBox } from '~/components/SceneBox';
 import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
 import { useSound } from '~/hooks/useSound';
-import {
-  generateRandomColor,
-  getDarkerVersionOfColor,
-} from '~/util/getRandomColor';
+import { generateRandomColor } from '~/util/color';
 import {
   createHollowSquare,
   FRICTIONLESS_PERFECTLY_ELASTIC,
@@ -28,7 +26,6 @@ const createSquare = (x: number, y: number, color: string) => {
     label: 'square',
     render: {
       fillStyle: color,
-      strokeStyle: getDarkerVersionOfColor(color),
     },
   });
 };
@@ -63,17 +60,17 @@ export const BouncingSquares = () => {
     });
 
     const squareBody = createSquare(
-      CANVAS_WIDTH / 2,
-      CANVAS_HEIGHT / 2,
+      CANVAS_WIDTH / 2 - SQUARE_SIZE,
+      CANVAS_HEIGHT / 2 - SQUARE_SIZE,
       COLORS.BLUE,
     );
     const squareBody2 = createSquare(
       CANVAS_WIDTH / 2 + SQUARE_SIZE,
-      CANVAS_HEIGHT / 2,
+      CANVAS_HEIGHT / 2 - SQUARE_SIZE,
       COLORS.GREEN,
     );
     const squareBody3 = createSquare(
-      CANVAS_WIDTH / 2,
+      CANVAS_WIDTH / 2 - SQUARE_SIZE,
       CANVAS_HEIGHT / 2 + SQUARE_SIZE,
       COLORS.RED,
     );
@@ -162,14 +159,5 @@ export const BouncingSquares = () => {
     );
   };
 
-  return (
-    <div
-      ref={boxRef}
-      style={{
-        height: CANVAS_HEIGHT,
-        width: CANVAS_WIDTH,
-      }}>
-      <canvas ref={canvasRef} />
-    </div>
-  );
+  return <SceneBox boxRef={boxRef} canvasRef={canvasRef} />;
 };

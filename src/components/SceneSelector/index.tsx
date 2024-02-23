@@ -1,7 +1,7 @@
 import { Select } from '@chakra-ui/react';
 import { ActionType, useAppContext } from '~/hooks/useContext';
 
-const SCENES = ['BouncingSquares', 'Conglomerates'] as const;
+const SCENES = ['TrailingSquares', 'BouncingSquares', 'Conglomerates'] as const;
 
 const formatSceneName = (scene: string) => {
   return scene.replace(/([A-Z])/g, ' $1').trim();

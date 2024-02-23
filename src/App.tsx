@@ -3,11 +3,12 @@ import { Button, Stack } from '@chakra-ui/react';
 import { SceneSelector } from '~/components/SceneSelector';
 import { SoundSelector } from '~/components/SoundSelector';
 import { ActionType, useAppContext } from '~/hooks/useContext';
-import { BouncingSquares, Conglomerates } from '~/scenes';
+import { BouncingSquares, Conglomerates, TrailingSquares } from '~/scenes';
 
 const SCENES = {
   BouncingSquares,
   Conglomerates,
+  TrailingSquares,
 };
 
 export const App = () => {

@@ -2,7 +2,7 @@ import { createContext, useContext, useReducer } from 'react';
 
 const DEFAULT_STATE = {
   isRunning: false,
-  selectedScene: 'Conglomerates',
+  selectedScene: 'BouncingSquares',
   sound: 'wood-block-1.m4a',
 };
 
