@@ -14,7 +14,7 @@ import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
 import { useSound } from '~/hooks/useSound';
-import { getDarkerVersionOfColor } from '~/util/color';
+import { getDarkerVersionOfColor, getRainbowColor } from '~/util/color';
 import {
   createHollowSquare,
   FRICTIONLESS_PERFECTLY_ELASTIC,
@@ -29,7 +29,7 @@ const WALL_COLLISION_CATEGORY = 0x0002;
 
 const SQUARE_SIZE = 50;
 const SQUARE_FORCE = 5;
-const FORCE_MULTIPLIER = 0.75; // 0.1, 0.3, 0.5, 0.9
+const FORCE_MULTIPLIER = 0.3; // 0.1, 0.3, 0.5, 0.9
 
 const CONTAINER_SIZE = 500;
 const CONTAINER_WALL_THICKNESS = 10;
@@ -52,7 +52,7 @@ const createSquare = (x: number, y: number, color: string) => {
   });
 };
 
-export const TrailingSquares = () => {
+export const TrailingRainbows = () => {
   const trails = useRef<Record<string, TrailSquare[]>>({});
   const {
     state: { isRunning, sound },
@@ -143,7 +143,6 @@ export const TrailingSquares = () => {
       'secondary-canvas',
     ) as HTMLCanvasElement;
     const ctx = secondaryCanvas?.getContext('2d');
-    // ctx?.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     Events.on(render, 'afterRender', () => {
       if (!ctx) return;
@@ -157,8 +156,8 @@ export const TrailingSquares = () => {
           });
         });
       }
-      Object.values(trails.current).forEach((trail, index) => {
-        const trailColor = squares[index]?.render.fillStyle || COLORS.RED;
+      const trailColor = getRainbowColor(trailCounter, 0.25);
+      Object.values(trails.current).forEach((trail) => {
         const unpaintedTrail = trail.slice(0)[0];
         const point = unpaintedTrail.position;
         ctx.fillStyle = trailColor;
@@ -181,7 +180,7 @@ export const TrailingSquares = () => {
       // Draw the actual squares
       squares.forEach((square) => {
         const position = square.position;
-        render.context.fillStyle = square.render.fillStyle as string;
+        render.context.fillStyle = trailColor;
         render.context.fillRect(
           position.x - SQUARE_SIZE / 2,
           position.y - SQUARE_SIZE / 2,

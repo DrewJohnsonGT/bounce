@@ -24,3 +24,14 @@ export const getDarkerVersionOfColor = (color: string) => {
     })
     .join('');
 };
+
+export const getRainbowColor = (
+  num: number,
+  rateOfColorChange: number = 1,
+): string => {
+  const hue = (num * rateOfColorChange) % 360;
+  const saturation = 100;
+  const lightness = 50;
+
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+};

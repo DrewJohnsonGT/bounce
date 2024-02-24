@@ -14,7 +14,7 @@ import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
 import { useSound } from '~/hooks/useSound';
-import { getDarkerVersionOfColor } from '~/util/color';
+import { getDarkerVersionOfColor, getRainbowColor } from '~/util/color';
 import {
   createHollowSquare,
   FRICTIONLESS_PERFECTLY_ELASTIC,
@@ -28,8 +28,8 @@ const SQUARE_COLLISION_CATEGORY = 0x0001;
 const WALL_COLLISION_CATEGORY = 0x0002;
 
 const SQUARE_SIZE = 50;
-const SQUARE_FORCE = 5;
-const FORCE_MULTIPLIER = 0.75; // 0.1, 0.3, 0.5, 0.9
+const SQUARE_FORCE = 10;
+const FORCE_MULTIPLIER = 0.5; // 0.1, 0.3, 0.5, 0.9
 
 const CONTAINER_SIZE = 500;
 const CONTAINER_WALL_THICKNESS = 10;
@@ -52,8 +52,8 @@ const createSquare = (x: number, y: number, color: string) => {
   });
 };
 
-export const TrailingSquares = () => {
-  const trails = useRef<Record<string, TrailSquare[]>>({});
+export const TrailingRainbow = () => {
+  const trails = useRef<TrailSquare[]>([]);
   const {
     state: { isRunning, sound },
   } = useAppContext();
@@ -87,79 +87,37 @@ export const TrailingSquares = () => {
       y: CANVAS_HEIGHT / 2,
     });
 
-    const square1 = createSquare(
+    const square = createSquare(
       CANVAS_WIDTH / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
       CANVAS_HEIGHT / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
       COLORS.RED,
     );
 
-    const square2 = createSquare(
-      CANVAS_WIDTH / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
-      CANVAS_HEIGHT / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
-      COLORS.GREEN,
-    );
-
-    const square3 = createSquare(
-      CANVAS_WIDTH / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
-      CANVAS_HEIGHT / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
-      COLORS.BLUE,
-    );
-
-    const square4 = createSquare(
-      CANVAS_WIDTH / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
-      CANVAS_HEIGHT / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
-      COLORS.ORANGE,
-    );
-
-    const squares = [square1, square2, square3, square4];
-
-    World.add(engine.world, [...squareSides, ...squares]);
+    World.add(engine.world, [...squareSides, square]);
 
     Body.applyForce(
-      square1,
+      square,
       { x: 0, y: 0 },
       { x: SQUARE_FORCE * FORCE_MULTIPLIER, y: SQUARE_FORCE },
-    );
-
-    Body.applyForce(
-      square2,
-      { x: 0, y: 0 },
-      { x: -SQUARE_FORCE * FORCE_MULTIPLIER, y: -SQUARE_FORCE },
-    );
-
-    Body.applyForce(
-      square3,
-      { x: 0, y: 0 },
-      { x: -SQUARE_FORCE, y: SQUARE_FORCE * FORCE_MULTIPLIER },
-    );
-
-    Body.applyForce(
-      square4,
-      { x: 0, y: 0 },
-      { x: SQUARE_FORCE, y: -SQUARE_FORCE * FORCE_MULTIPLIER },
     );
 
     const secondaryCanvas = document.getElementById(
       'secondary-canvas',
     ) as HTMLCanvasElement;
     const ctx = secondaryCanvas?.getContext('2d');
-    // ctx?.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     Events.on(render, 'afterRender', () => {
       if (!ctx) return;
       trailCounter += 1;
       if (trailCounter % TRAIL_MODULO === 0) {
-        squares.forEach((square) => {
-          const trail = trails.current[square.id] || [];
-          trails.current[square.id] = trail;
-          trail.unshift({
-            position: { ...square.position },
-          });
+        const trail = trails.current;
+        trail.unshift({
+          position: { ...square.position },
         });
       }
-      Object.values(trails.current).forEach((trail, index) => {
-        const trailColor = squares[index]?.render.fillStyle || COLORS.RED;
-        const unpaintedTrail = trail.slice(0)[0];
+      const unpaintedTrail = trails.current.slice(0)[0];
+      const trailColor = getRainbowColor(trailCounter, 0.25);
+      if (unpaintedTrail) {
         const point = unpaintedTrail.position;
         ctx.fillStyle = trailColor;
         ctx.fillRect(
@@ -176,27 +134,24 @@ export const TrailingSquares = () => {
           SQUARE_SIZE,
           SQUARE_SIZE,
         );
-      });
-
-      // Draw the actual squares
-      squares.forEach((square) => {
-        const position = square.position;
-        render.context.fillStyle = square.render.fillStyle as string;
-        render.context.fillRect(
-          position.x - SQUARE_SIZE / 2,
-          position.y - SQUARE_SIZE / 2,
-          SQUARE_SIZE,
-          SQUARE_SIZE,
-        );
-        render.context.strokeStyle = COLORS.WHITE;
-        render.context.lineWidth = 2;
-        render.context.strokeRect(
-          position.x - SQUARE_SIZE / 2,
-          position.y - SQUARE_SIZE / 2,
-          SQUARE_SIZE,
-          SQUARE_SIZE,
-        );
-      });
+      }
+      // Draw the actual square
+      const position = square.position;
+      render.context.fillStyle = trailColor;
+      render.context.fillRect(
+        position.x - SQUARE_SIZE / 2,
+        position.y - SQUARE_SIZE / 2,
+        SQUARE_SIZE,
+        SQUARE_SIZE,
+      );
+      render.context.strokeStyle = COLORS.WHITE;
+      render.context.lineWidth = 2;
+      render.context.strokeRect(
+        position.x - SQUARE_SIZE / 2,
+        position.y - SQUARE_SIZE / 2,
+        SQUARE_SIZE,
+        SQUARE_SIZE,
+      );
     });
 
     Events.on(engine, 'collisionStart', (event) => {
