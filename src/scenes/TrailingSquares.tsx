@@ -29,6 +29,7 @@ const WALL_COLLISION_CATEGORY = 0x0002;
 
 const SQUARE_SIZE = 50;
 const SQUARE_FORCE = 5;
+const FORCE_MULTIPLIER = 0.75; // 0.1, 0.3, 0.5, 0.9
 
 const CONTAINER_SIZE = 500;
 const CONTAINER_WALL_THICKNESS = 10;
@@ -117,25 +118,25 @@ export const TrailingSquares = () => {
     Body.applyForce(
       square1,
       { x: 0, y: 0 },
-      { x: SQUARE_FORCE * 0.1, y: SQUARE_FORCE },
+      { x: SQUARE_FORCE * FORCE_MULTIPLIER, y: SQUARE_FORCE },
     );
 
     Body.applyForce(
       square2,
       { x: 0, y: 0 },
-      { x: -SQUARE_FORCE * 0.1, y: -SQUARE_FORCE },
+      { x: -SQUARE_FORCE * FORCE_MULTIPLIER, y: -SQUARE_FORCE },
     );
 
     Body.applyForce(
       square3,
       { x: 0, y: 0 },
-      { x: -SQUARE_FORCE, y: SQUARE_FORCE * 0.1 },
+      { x: -SQUARE_FORCE, y: SQUARE_FORCE * FORCE_MULTIPLIER },
     );
 
     Body.applyForce(
       square4,
       { x: 0, y: 0 },
-      { x: SQUARE_FORCE, y: -SQUARE_FORCE * 0.1 },
+      { x: SQUARE_FORCE, y: -SQUARE_FORCE * FORCE_MULTIPLIER },
     );
 
     const secondaryCanvas = document.getElementById(

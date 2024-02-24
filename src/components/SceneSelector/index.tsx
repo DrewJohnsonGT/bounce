@@ -1,4 +1,5 @@
-import { Select } from '@chakra-ui/react';
+import { FaRegImage } from 'react-icons/fa';
+import { FormControl, FormLabel, HStack, Select, Text } from '@chakra-ui/react';
 import { ActionType, useAppContext } from '~/hooks/useContext';
 import { SCENES } from '~/scenes';
 
@@ -22,12 +23,20 @@ export const SceneSelector = () => {
   };
 
   return (
-    <Select value={selectedScene} onChange={handleSoundChange}>
-      {SCENE_NAMES.map((scene) => (
-        <option key={scene} value={scene}>
-          {formatSceneName(scene)}
-        </option>
-      ))}
-    </Select>
+    <FormControl>
+      <FormLabel>
+        <HStack>
+          <Text>Scene</Text>
+          <FaRegImage />
+        </HStack>
+      </FormLabel>
+      <Select value={selectedScene} onChange={handleSoundChange}>
+        {SCENE_NAMES.map((scene) => (
+          <option key={scene} value={scene}>
+            {formatSceneName(scene)}
+          </option>
+        ))}
+      </Select>
+    </FormControl>
   );
 };

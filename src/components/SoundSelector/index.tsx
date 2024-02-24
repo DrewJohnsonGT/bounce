@@ -1,4 +1,5 @@
-import { Select } from '@chakra-ui/react';
+import { FaVolumeUp } from 'react-icons/fa';
+import { FormControl, FormLabel, HStack, Select, Text } from '@chakra-ui/react';
 import audioFiles from '~/assets/audioList.json';
 import { ActionType, useAppContext } from '~/hooks/useContext';
 
@@ -20,12 +21,20 @@ export const SoundSelector = () => {
   };
 
   return (
-    <Select value={sound} onChange={handleSoundChange}>
-      {audioFiles.map((file) => (
-        <option key={file} value={file}>
-          {formatAudioName(file)}
-        </option>
-      ))}
-    </Select>
+    <FormControl>
+      <FormLabel>
+        <HStack>
+          <Text>Sound</Text>
+          <FaVolumeUp />
+        </HStack>
+      </FormLabel>
+      <Select value={sound} onChange={handleSoundChange}>
+        {audioFiles.map((file) => (
+          <option key={file} value={file}>
+            {formatAudioName(file)}
+          </option>
+        ))}
+      </Select>
+    </FormControl>
   );
 };

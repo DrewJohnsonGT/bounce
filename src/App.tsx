@@ -20,7 +20,7 @@ export const App = () => {
   return (
     <div className="container">
       <div className="controls">
-        <Stack spacing={3}>
+        <Stack spacing={6} margin={6}>
           <Button
             onClick={toggleIsRunning}
             isDisabled={false}
