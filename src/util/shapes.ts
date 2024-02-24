@@ -1,12 +1,20 @@
 import { Bodies } from 'matter-js';
 import type { Body, IChamferableBodyDefinition } from 'matter-js';
 
-export const FRICTIONLESS_PERFECTLY_ELASTIC: IChamferableBodyDefinition = {
+export const PERFECTLY_ELASTIC_INF_INTERTIA: IChamferableBodyDefinition = {
   density: 1,
   friction: 0,
   frictionAir: 0,
   frictionStatic: 0,
   inertia: Infinity,
+  restitution: 1,
+};
+
+export const PERFECTLY_ELASTIC: IChamferableBodyDefinition = {
+  density: 1,
+  friction: 0,
+  frictionAir: 0,
+  frictionStatic: 0,
   restitution: 1,
 };
 
@@ -28,7 +36,7 @@ export const createHollowSquare = ({
   const rectangleDefinitionConfig = {
     isStatic: true,
     render: { fillStyle: color },
-    ...FRICTIONLESS_PERFECTLY_ELASTIC,
+    ...PERFECTLY_ELASTIC_INF_INTERTIA,
     label: 'static-wall',
     ...additionalOptions,
   };

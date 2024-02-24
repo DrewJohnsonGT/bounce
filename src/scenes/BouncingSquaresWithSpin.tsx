@@ -9,11 +9,10 @@ import { generateRandomColor } from '~/util/color';
 import {
   createHollowSquare,
   getRandomPositionInsideSquareContainer,
-  PERFECTLY_ELASTIC_INF_INTERTIA,
+  PERFECTLY_ELASTIC,
 } from '~/util/shapes';
 
 const SQUARE_SIZE = 20;
-const SQUARE_FORCE = 0.5;
 
 const CONTAINER_SIZE = 500;
 const CONTAINER_WALL_THICKNESS = 10;
@@ -23,7 +22,7 @@ const INITIAL_VELOCITY = 1;
 
 const createSquare = (x: number, y: number, color: string) => {
   return Bodies.rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE, {
-    ...PERFECTLY_ELASTIC_INF_INTERTIA,
+    ...PERFECTLY_ELASTIC,
     label: 'square',
     render: {
       fillStyle: color,
@@ -31,7 +30,7 @@ const createSquare = (x: number, y: number, color: string) => {
   });
 };
 
-export const BouncingSquares = () => {
+export const BouncingSquaresWithSpin = () => {
   const {
     state: { isRunning, sound },
   } = useAppContext();
@@ -143,14 +142,10 @@ export const BouncingSquares = () => {
     const squareBody = createSquare(position.x, position.y, color);
 
     World.add(engine.world, squareBody);
-    Body.applyForce(
-      squareBody,
-      { x: 0, y: 0 },
-      {
-        x: Math.random() < 0.5 ? -SQUARE_FORCE : SQUARE_FORCE,
-        y: Math.random() < 0.5 ? -SQUARE_FORCE : SQUARE_FORCE,
-      },
-    );
+    Body.setVelocity(squareBody, {
+      x: Math.random() < 0.5 ? -INITIAL_VELOCITY : INITIAL_VELOCITY,
+      y: Math.random() < 0.5 ? -INITIAL_VELOCITY : INITIAL_VELOCITY,
+    });
   };
 
   return <SceneBox boxRef={boxRef} canvasRef={canvasRef} />;

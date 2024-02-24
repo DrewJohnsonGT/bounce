@@ -9,7 +9,7 @@ import { createHollowSquare } from '~/util/shapes';
 const CONTAINER_SIZE = 500;
 const CONTAINER_WALL_THICKNESS = 5;
 
-export const Conglomerates = () => {
+export const Blank = () => {
   const {
     state: { isRunning },
   } = useAppContext();
@@ -21,7 +21,7 @@ export const Conglomerates = () => {
       element: boxRef.current || undefined,
       engine,
       options: {
-        background: COLORS.BLACK,
+        background: COLORS.TRANSPARENT,
         height: CANVAS_HEIGHT,
         width: CANVAS_WIDTH,
         wireframes: false,

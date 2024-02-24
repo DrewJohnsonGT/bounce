@@ -17,7 +17,7 @@ import { useSound } from '~/hooks/useSound';
 import { getDarkerVersionOfColor, getRainbowColor } from '~/util/color';
 import {
   createHollowSquare,
-  FRICTIONLESS_PERFECTLY_ELASTIC,
+  PERFECTLY_ELASTIC_INF_INTERTIA,
 } from '~/util/shapes';
 
 interface TrailSquare {
@@ -39,7 +39,7 @@ let trailCounter = 0;
 
 const createSquare = (x: number, y: number, color: string) => {
   return Bodies.rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE, {
-    ...FRICTIONLESS_PERFECTLY_ELASTIC,
+    ...PERFECTLY_ELASTIC_INF_INTERTIA,
     collisionFilter: {
       category: SQUARE_COLLISION_CATEGORY,
       mask: WALL_COLLISION_CATEGORY,
