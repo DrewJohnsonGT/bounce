@@ -143,7 +143,7 @@ export const TrailingSquares = () => {
       'secondary-canvas',
     ) as HTMLCanvasElement;
     const ctx = secondaryCanvas?.getContext('2d');
-    ctx?.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    // ctx?.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     Events.on(render, 'afterRender', () => {
       if (!ctx) return;

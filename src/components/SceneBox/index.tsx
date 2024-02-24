@@ -13,7 +13,7 @@ export const SceneBox = ({ boxRef, canvasRef, logoOffset }: SceneBoxProps) => {
     <div
       ref={boxRef}
       style={{
-        backgroundColor: 'transparent',
+        backgroundColor: 'black',
         height: CANVAS_HEIGHT,
         position: 'relative',
         width: CANVAS_WIDTH,
@@ -27,7 +27,7 @@ export const SceneBox = ({ boxRef, canvasRef, logoOffset }: SceneBoxProps) => {
           height: CANVAS_HEIGHT,
           position: 'absolute',
           width: CANVAS_WIDTH,
-          zIndex: 1,
+          zIndex: 2,
         }}
       />
       <canvas
@@ -36,7 +36,7 @@ export const SceneBox = ({ boxRef, canvasRef, logoOffset }: SceneBoxProps) => {
           height: CANVAS_HEIGHT,
           position: 'absolute',
           width: CANVAS_WIDTH,
-          zIndex: 2,
+          zIndex: 3,
         }}
       />
       <img
@@ -49,7 +49,7 @@ export const SceneBox = ({ boxRef, canvasRef, logoOffset }: SceneBoxProps) => {
           position: 'absolute',
           top: `calc(50% - ${LOGO_SIZE / 2}px + ${logoOffset?.y || 0}px)`,
           width: LOGO_SIZE,
-          zIndex: 3,
+          zIndex: 1,
         }}
       />
     </div>
