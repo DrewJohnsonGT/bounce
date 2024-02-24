@@ -1,9 +1,11 @@
 import { createContext, useContext, useReducer } from 'react';
+import SOUNDS from '~/assets/audioList.json';
+import { SCENES } from '~/scenes';
 
 const DEFAULT_STATE = {
   isRunning: false,
-  selectedScene: 'BouncingSquares',
-  sound: 'wood-block-1.m4a',
+  selectedScene: Object.keys(SCENES)[1],
+  sound: SOUNDS[10],
 };
 
 export type State = typeof DEFAULT_STATE;

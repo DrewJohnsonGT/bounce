@@ -1,3 +1,7 @@
-export { BouncingSquares } from '~/scenes/BouncingSquares';
-export { Conglomerates } from '~/scenes/Conglomerates';
-export { TrailingSquares } from '~/scenes/TrailingSquares';
+import { BouncingSquares } from '~/scenes/BouncingSquares';
+import { TrailingSquares } from '~/scenes/TrailingSquares';
+
+export const SCENES = {
+  BouncingSquares,
+  TrailingSquares,
+};

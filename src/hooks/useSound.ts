@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-const POOL_SIZE = 100;
+const POOL_SIZE = 500;
 const AUDIO_PATH = '/audio';
 
 export const useSound = (soundUrl: string) => {
