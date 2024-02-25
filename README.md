@@ -11,3 +11,6 @@
 - Square races - 4 squares
   - Tron style tails
   - Lazers and other defenses along path
+- Bouncing with different shapes - shapes need to fit in their holes
+- Bouncing letters - pause to make a word
+- Reading rainbow bounces

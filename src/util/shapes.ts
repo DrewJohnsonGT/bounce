@@ -1,5 +1,10 @@
-import { Bodies } from 'matter-js';
-import type { Body, IChamferableBodyDefinition } from 'matter-js';
+import {
+  Bodies,
+  type Body,
+  Composite,
+  type IChamferableBodyDefinition,
+  Vector,
+} from 'matter-js';
 
 export const PERFECTLY_ELASTIC_INF_INTERTIA: IChamferableBodyDefinition = {
   density: 1,
@@ -100,4 +105,53 @@ export const getRandomPositionInsideSquareContainer = ({
   const y = minY + Math.random() * (2 * effectiveHalfSize);
 
   return { x, y };
+};
+
+export const verticesToEdges = (
+  vertices: Vector[],
+  options: IChamferableBodyDefinition = {},
+  edgeThickness: number = 5,
+  overlapExtension: number = 0.5,
+) => {
+  const composite = Composite.create();
+  for (let i = 0; i < vertices.length; i++) {
+    const start = vertices[i];
+    const end = vertices[(i + 1) % vertices.length];
+
+    const edgeVector = Vector.sub(end, start);
+    const length = Vector.magnitude(edgeVector) + overlapExtension * 2;
+    const angle = Math.atan2(edgeVector.y, edgeVector.x);
+    const midpoint = {
+      x: (start.x + end.x) / 2 + (overlapExtension * Math.cos(angle)) / 2,
+      y: (start.y + end.y) / 2 + (overlapExtension * Math.sin(angle)) / 2,
+    };
+
+    const edge = Bodies.rectangle(
+      midpoint.x,
+      midpoint.y,
+      length,
+      edgeThickness,
+      {
+        angle,
+        isStatic: true,
+        ...options,
+      },
+    );
+
+    Composite.add(composite, edge);
+  }
+  return composite;
+};
+
+export const centroid = (vertices: Vector[]) => {
+  const centroid = vertices.reduce(
+    (acc, cur) => {
+      return {
+        x: acc.x + cur.x / vertices.length,
+        y: acc.y + cur.y / vertices.length,
+      };
+    },
+    { x: 0, y: 0 },
+  );
+  return centroid;
 };

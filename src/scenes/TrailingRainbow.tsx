@@ -29,7 +29,8 @@ const WALL_COLLISION_CATEGORY = 0x0002;
 
 const SQUARE_SIZE = 50;
 const SQUARE_FORCE = 10;
-const FORCE_MULTIPLIER = 0.5; // 0.1, 0.3, 0.5, 0.9
+const SQUARE_BORDER_COLOR = COLORS.BLACK;
+const FORCE_MULTIPLIER = 0.9; // 0.1, 0.3, 0.5, 0.9
 
 const CONTAINER_SIZE = 500;
 const CONTAINER_WALL_THICKNESS = 10;
@@ -126,7 +127,7 @@ export const TrailingRainbow = () => {
           SQUARE_SIZE,
           SQUARE_SIZE,
         );
-        ctx.strokeStyle = COLORS.WHITE;
+        ctx.strokeStyle = SQUARE_BORDER_COLOR;
         ctx.lineWidth = 2;
         ctx.strokeRect(
           point.x - SQUARE_SIZE / 2,
@@ -144,7 +145,7 @@ export const TrailingRainbow = () => {
         SQUARE_SIZE,
         SQUARE_SIZE,
       );
-      render.context.strokeStyle = COLORS.WHITE;
+      render.context.strokeStyle = SQUARE_BORDER_COLOR;
       render.context.lineWidth = 2;
       render.context.strokeRect(
         position.x - SQUARE_SIZE / 2,

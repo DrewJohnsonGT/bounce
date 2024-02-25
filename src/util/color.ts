@@ -35,3 +35,9 @@ export const getRainbowColor = (
 
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
+
+export const opacity = (hexColor: string, opacity: number) => {
+  return `${hexColor}${Math.floor(opacity * 255)
+    .toString(16)
+    .padStart(2, '0')}`;
+};

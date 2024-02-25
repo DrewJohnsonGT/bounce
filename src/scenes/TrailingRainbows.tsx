@@ -29,6 +29,7 @@ const WALL_COLLISION_CATEGORY = 0x0002;
 
 const SQUARE_SIZE = 50;
 const SQUARE_FORCE = 5;
+const SQUARE_BORDER_COLOR = COLORS.WHITE;
 const FORCE_MULTIPLIER = 0.3; // 0.1, 0.3, 0.5, 0.9
 
 const CONTAINER_SIZE = 500;
@@ -58,7 +59,7 @@ export const TrailingRainbows = () => {
     state: { isRunning, sound },
   } = useAppContext();
   const { boxRef, canvasRef, engine, runner } = useEngine({ isRunning });
-  const bounceSound = useSound(sound);
+  const bounceSound = useSound(sound, 10);
 
   useEffect(() => {
     const render = Render.create({
@@ -167,7 +168,7 @@ export const TrailingRainbows = () => {
           SQUARE_SIZE,
           SQUARE_SIZE,
         );
-        ctx.strokeStyle = COLORS.WHITE;
+        ctx.strokeStyle = SQUARE_BORDER_COLOR;
         ctx.lineWidth = 2;
         ctx.strokeRect(
           point.x - SQUARE_SIZE / 2,
@@ -187,7 +188,7 @@ export const TrailingRainbows = () => {
           SQUARE_SIZE,
           SQUARE_SIZE,
         );
-        render.context.strokeStyle = COLORS.WHITE;
+        render.context.strokeStyle = SQUARE_BORDER_COLOR;
         render.context.lineWidth = 2;
         render.context.strokeRect(
           position.x - SQUARE_SIZE / 2,

@@ -4,7 +4,7 @@ import { SCENES } from '~/scenes';
 
 const DEFAULT_STATE = {
   isRunning: false,
-  selectedScene: Object.keys(SCENES)[1],
+  selectedScene: Object.keys(SCENES)[2],
   sound: SOUNDS[18],
 };
 
