@@ -10,13 +10,19 @@ import {
   World,
 } from 'matter-js';
 import { SceneBox } from '~/components/SceneBox';
-import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from '~/constants';
+import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS, EMOJIS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
 import { useSound } from '~/hooks/useSound';
 import { opacity } from '~/util/color';
 import { MAP_1 } from '~/util/maps';
-import { centroid, PERFECTLY_ELASTIC, verticesToEdges } from '~/util/shapes';
+import {
+  centroid,
+  fillOutsideVerticesWithColor,
+  PERFECTLY_ELASTIC,
+  renderCheckeredFlagForNonUniformBody,
+  verticesToEdges,
+} from '~/util/shapes';
 
 const SQUARE_SIZE = 20;
 const SQUARE_START_OFFSET = { x: -10, y: -10 };
@@ -25,11 +31,23 @@ const INITIAL_VELOCITY = 5;
 const ZONE_COLLISION_CATEGORY = 0x0001;
 const SQUARE_COLLISION_CATEGORY = 0x0002;
 
-const FINISHER_LOCATIONS = [
-  { x: 94.25, y: 810.5 },
-  { x: 62.25, y: 850.5 },
-  { x: 131.25, y: 860.5 },
-  { x: 94.25, y: 900.5 },
+const FINISHING_SPOTS = [
+  {
+    emojis: [EMOJIS.CROWN, EMOJIS.GOLD_MEDAL],
+    location: { x: 124.75, y: 796.5 },
+  },
+  {
+    emojis: [EMOJIS.PARTY, EMOJIS.SILVER_MEDAL],
+    location: { x: 92.75, y: 846.5 },
+  },
+  {
+    emojis: [EMOJIS.HAPPY, EMOJIS.BRONZE_MEDAL],
+    location: { x: 173.75, y: 857.5 },
+  },
+  {
+    emojis: [EMOJIS.SAD],
+    location: { x: 125.75, y: 924.5 },
+  },
 ];
 
 enum BodyLabel {
@@ -44,61 +62,36 @@ enum BodyLabel {
   ORANGE_SQUARE = 'orange-square',
 }
 
-const fillOutsideMap = (
+const drawEmojiToCanvas = (
   canvas: HTMLCanvasElement,
-  vertices: Vector[],
-  fillColor: string,
+  emoji: string,
+  x: number,
+  y: number,
 ) => {
-  if (!canvas || !vertices || vertices.length === 0) return;
-
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
-
-  ctx.fillStyle = fillColor;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.beginPath();
-  ctx.moveTo(vertices[0].x, vertices[0].y);
-  vertices.forEach((vertex) => {
-    ctx.lineTo(vertex.x, vertex.y);
-  });
-  ctx.closePath();
-
-  ctx.globalCompositeOperation = 'destination-out';
-  ctx.fill();
-
-  ctx.globalCompositeOperation = 'source-over';
+  ctx.font = '20px Arial';
+  ctx.fillText(emoji, x, y);
 };
 
-const renderCheckeredFlagForNonUniformBody = (
-  body: Body,
-  context: CanvasRenderingContext2D,
+const drawFinisherEmojis = (
+  canvas: HTMLCanvasElement,
+  emojis: string[],
+  position: Vector,
 ) => {
-  const vertices = body.vertices;
+  const [x, y] = [position.x - 12, position.y - 12];
+  emojis.forEach((emoji, index) => {
+    drawEmojiToCanvas(canvas, emoji, x + index * 12, y);
+  });
+};
 
-  context.save();
-
-  context.beginPath();
-  context.moveTo(vertices[0].x, vertices[0].y);
-  for (let i = 1; i < vertices.length; i++) {
-    context.lineTo(vertices[i].x, vertices[i].y);
-  }
-  context.closePath();
-  context.clip();
-
-  const patternSize = 10;
-  const bounds = body.bounds;
-  for (let x = bounds.min.x; x < bounds.max.x; x += patternSize) {
-    for (let y = bounds.min.y; y < bounds.max.y; y += patternSize) {
-      context.fillStyle =
-        (Math.floor(x / patternSize) + Math.floor(y / patternSize)) % 2 === 0
-          ? 'black'
-          : 'white';
-      context.fillRect(x, y, patternSize, patternSize);
-    }
-  }
-
-  context.restore();
+const drawPodium = (canvas: HTMLCanvasElement) => {
+  const img = new Image();
+  img.src = 'podium.png';
+  img.onload = function () {
+    const ctx = canvas.getContext('2d');
+    ctx?.drawImage(img, 40, 780, 175, 175);
+  };
 };
 
 const createSquare = (
@@ -156,19 +149,15 @@ export const SquareRace = () => {
         },
       },
       5,
-      1,
+      1.25,
     );
 
     const secondaryCanvas = document.getElementById(
       'secondary-canvas',
     ) as HTMLCanvasElement;
-    fillOutsideMap(secondaryCanvas, MAP_1.edges, COLORS.GRAY);
-    const img = new Image();
-    img.src = 'podium.png';
-    img.onload = function () {
-      const ctx = secondaryCanvas.getContext('2d');
-      ctx?.drawImage(img, 20, 800, 150, 150);
-    };
+
+    fillOutsideVerticesWithColor(secondaryCanvas, MAP_1.edges, COLORS.GRAY);
+    drawPodium(secondaryCanvas);
 
     const startCentroid = centroid(MAP_1.start);
     const startZone = Bodies.fromVertices(
@@ -208,14 +197,14 @@ export const SquareRace = () => {
     );
 
     const square1 = createSquare(
-      startCentroid.x - SQUARE_SIZE + SQUARE_START_OFFSET.x,
+      startCentroid.x - SQUARE_SIZE + SQUARE_START_OFFSET.x - 2.5,
       startCentroid.y + SQUARE_SIZE / 2 + SQUARE_START_OFFSET.y,
       COLORS.BLUE,
       BodyLabel.BLUE_SQUARE,
     );
 
     const square2 = createSquare(
-      startCentroid.x + SQUARE_SIZE * 2 + SQUARE_START_OFFSET.x,
+      startCentroid.x + SQUARE_SIZE * 2 + SQUARE_START_OFFSET.x + 5,
       startCentroid.y + SQUARE_SIZE / 2 + SQUARE_START_OFFSET.y,
       COLORS.GREEN,
       BodyLabel.GREEN_SQUARE,
@@ -229,9 +218,9 @@ export const SquareRace = () => {
     );
 
     const square4 = createSquare(
-      startCentroid.x + SQUARE_SIZE + SQUARE_START_OFFSET.x,
+      startCentroid.x + SQUARE_SIZE + SQUARE_START_OFFSET.x + 2.5,
       startCentroid.y + SQUARE_SIZE / 2 + SQUARE_START_OFFSET.y,
-      COLORS.ORANGE,
+      COLORS.DARKER_ORANGE,
       BodyLabel.ORANGE_SQUARE,
     );
 
@@ -262,19 +251,31 @@ export const SquareRace = () => {
             Body.setStatic(square, true);
             square.label = BodyLabel.STATIC_SQUARE;
             // Add to finishsers and move to podium location
-            const podiumLocation = FINISHER_LOCATIONS[finishers.current.length];
+            const finisherSpot = FINISHING_SPOTS[finishers.current.length];
+            const podiumLocation = finisherSpot.location;
             Body.setPosition(square, podiumLocation);
             finishers.current.push(square.label);
+            drawFinisherEmojis(
+              secondaryCanvas,
+              finisherSpot.emojis,
+              podiumLocation,
+            );
             if (finishers.current.length === 3) {
               // Find the remaining square and move it to the podium
               const remainingSquare = squares.find(
                 (s) => !finishers.current.includes(s.label),
               );
               if (remainingSquare) {
-                const podiumLocation = FINISHER_LOCATIONS[3];
+                const finalFinisherSpot = FINISHING_SPOTS[3];
+                const podiumLocation = finalFinisherSpot.location;
                 remainingSquare.label = BodyLabel.STATIC_SQUARE;
                 Body.setStatic(remainingSquare, true);
                 Body.setPosition(remainingSquare, podiumLocation);
+                drawFinisherEmojis(
+                  secondaryCanvas,
+                  finalFinisherSpot.emojis,
+                  podiumLocation,
+                );
               }
             }
           }

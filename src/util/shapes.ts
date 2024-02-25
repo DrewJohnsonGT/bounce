@@ -155,3 +155,59 @@ export const centroid = (vertices: Vector[]) => {
   );
   return centroid;
 };
+
+export const fillOutsideVerticesWithColor = (
+  canvas: HTMLCanvasElement,
+  vertices: Vector[],
+  fillColor: string,
+) => {
+  if (!canvas || !vertices || vertices.length === 0) return;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  ctx.fillStyle = fillColor;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.beginPath();
+  ctx.moveTo(vertices[0].x, vertices[0].y);
+  vertices.forEach((vertex) => {
+    ctx.lineTo(vertex.x, vertex.y);
+  });
+  ctx.closePath();
+
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fill();
+
+  ctx.globalCompositeOperation = 'source-over';
+};
+
+export const renderCheckeredFlagForNonUniformBody = (
+  body: Body,
+  context: CanvasRenderingContext2D,
+) => {
+  const vertices = body.vertices;
+
+  context.save();
+
+  context.beginPath();
+  context.moveTo(vertices[0].x, vertices[0].y);
+  for (let i = 1; i < vertices.length; i++) {
+    context.lineTo(vertices[i].x, vertices[i].y);
+  }
+  context.closePath();
+  context.clip();
+
+  const patternSize = 10;
+  const bounds = body.bounds;
+  for (let x = bounds.min.x; x < bounds.max.x; x += patternSize) {
+    for (let y = bounds.min.y; y < bounds.max.y; y += patternSize) {
+      context.fillStyle =
+        (Math.floor(x / patternSize) + Math.floor(y / patternSize)) % 2 === 0
+          ? 'black'
+          : 'white';
+      context.fillRect(x, y, patternSize, patternSize);
+    }
+  }
+  context.restore();
+};

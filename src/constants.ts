@@ -25,3 +25,21 @@ export const COLORS = {
   WHITE: '#ffffff',
   YELLOW: '#ffff00',
 };
+
+export const EMOJIS = {
+  ANGRY: '😡',
+  BRONZE_MEDAL: '🥉',
+  CROWN: '🫅',
+  CRYING: '😢',
+  FEARFUL: '😨',
+  GOLD_MEDAL: '🥇',
+  HAPPY: '😊',
+  JOYFUL: '😂',
+  NEUTRAL: '😐',
+  PARTY: '🥳',
+  SAD: '😔',
+  SILVER_MEDAL: '🥈',
+  SLEEPY: '😴',
+  SMILE: '🙂',
+  SURPRISED: '😲',
+};
