@@ -29,9 +29,9 @@ export const SoundSelector = () => {
         </HStack>
       </FormLabel>
       <Select value={sound} onChange={handleSoundChange}>
-        {audioFiles.map((file) => (
+        {audioFiles.map((file, index) => (
           <option key={file} value={file}>
-            {formatAudioName(file)}
+            {`(${index}) - ${formatAudioName(file)}`}
           </option>
         ))}
       </Select>

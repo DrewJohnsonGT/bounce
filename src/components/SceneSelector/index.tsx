@@ -31,9 +31,9 @@ export const SceneSelector = () => {
         </HStack>
       </FormLabel>
       <Select value={selectedScene} onChange={handleSoundChange}>
-        {SCENE_NAMES.map((scene) => (
+        {SCENE_NAMES.map((scene, index) => (
           <option key={scene} value={scene}>
-            {formatSceneName(scene)}
+            {`(${index}) - ${formatSceneName(scene)}`}
           </option>
         ))}
       </Select>

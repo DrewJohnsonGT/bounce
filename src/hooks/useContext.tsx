@@ -5,8 +5,8 @@ import { SCENES } from '~/scenes';
 const DEFAULT_STATE = {
   isRunning: false,
   selectedMap: 2,
-  selectedScene: Object.keys(SCENES)[2],
-  sound: SOUNDS[18],
+  selectedScene: Object.keys(SCENES)[5],
+  sound: SOUNDS[3],
 };
 
 export type State = typeof DEFAULT_STATE;

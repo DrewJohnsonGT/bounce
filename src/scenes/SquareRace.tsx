@@ -217,22 +217,21 @@ export const SquareRace = () => {
       },
     );
 
-    // Draw Obstacles
-    // const obstacles = map.obstacles.map((obstacle) => {
-    //   fillInsideVerticesWithColor(secondaryCanvas, obstacle, COLORS.RED);
-    //   return verticesToEdges(
-    //     obstacle,
-    //     {
-    //       isStatic: true,
-    //       label: BodyLabel.OBSTACLE,
-    //       render: {
-    //         fillStyle: COLORS.WHITE,
-    //       },
-    //     },
-    //     EDGE_THICKNESS,
-    //     1,
-    //   );
-    // });
+    const obstacles = map.obstacles.map((obstacle) => {
+      fillInsideVerticesWithColor(secondaryCanvas, obstacle, COLORS.PURPLE);
+      return verticesToEdges(
+        obstacle,
+        {
+          isStatic: true,
+          label: BodyLabel.OBSTACLE,
+          render: {
+            fillStyle: COLORS.WHITE,
+          },
+        },
+        EDGE_THICKNESS,
+        1,
+      );
+    });
 
     const square1 = createSquare(
       startCentroid.x - SQUARE_SIZE + SQUARE_START_OFFSET.x - 2.5,
@@ -269,7 +268,7 @@ export const SquareRace = () => {
       startZone,
       endZone,
       ...squares,
-      // ...obstacles,
+      ...obstacles,
     ]);
 
     squares.forEach((square) => {
