@@ -4,6 +4,7 @@ import { SCENES } from '~/scenes';
 
 const DEFAULT_STATE = {
   isRunning: false,
+  selectedMap: 2,
   selectedScene: Object.keys(SCENES)[2],
   sound: SOUNDS[18],
 };
@@ -14,12 +15,14 @@ export enum ActionType {
   SetScene = 'SET_SCENE',
   SetSound = 'SET_SOUND',
   SetIsRunning = 'SET_IS_RUNNING',
+  ChangeMap = 'CHANGE_MAP',
 }
 
 interface Payloads {
   [ActionType.SetScene]: string;
   [ActionType.SetSound]: string;
   [ActionType.SetIsRunning]: boolean;
+  [ActionType.ChangeMap]: number;
 }
 export type ActionMap<M extends Record<string, any>> = {
   [Key in keyof M]: M[Key] extends undefined
@@ -51,6 +54,11 @@ const reducer = (state: typeof DEFAULT_STATE, action: Actions) => {
       return {
         ...state,
         isRunning: action.payload,
+      };
+    case ActionType.ChangeMap:
+      return {
+        ...state,
+        selectedMap: action.payload,
       };
     default:
       return state;

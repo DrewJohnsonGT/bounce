@@ -1,5 +1,6 @@
 import { FaPlay, FaStop } from 'react-icons/fa';
 import { Button, Stack } from '@chakra-ui/react';
+import { MapSelector } from '~/components/MapSelector';
 import { SceneSelector } from '~/components/SceneSelector';
 import { SoundSelector } from '~/components/SoundSelector';
 import { ActionType, useAppContext } from '~/hooks/useContext';
@@ -31,6 +32,7 @@ export const App = () => {
           </Button>
           <SoundSelector />
           <SceneSelector />
+          <MapSelector />
         </Stack>
       </div>
       <main className="scene">

@@ -182,6 +182,28 @@ export const fillOutsideVerticesWithColor = (
   ctx.globalCompositeOperation = 'source-over';
 };
 
+export const fillInsideVerticesWithColor = (
+  canvas: HTMLCanvasElement,
+  vertices: Vector[],
+  fillColor: string,
+) => {
+  if (!canvas || !vertices || vertices.length === 0) return;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  ctx.fillStyle = fillColor;
+
+  ctx.beginPath();
+  ctx.moveTo(vertices[0].x, vertices[0].y);
+  vertices.forEach((vertex) => {
+    ctx.lineTo(vertex.x, vertex.y);
+  });
+  ctx.closePath();
+
+  ctx.fill();
+};
+
 export const renderCheckeredFlagForNonUniformBody = (
   body: Body,
   context: CanvasRenderingContext2D,

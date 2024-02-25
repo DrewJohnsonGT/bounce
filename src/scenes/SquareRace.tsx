@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import React, { useEffect, useRef } from 'react';
 import {
   Bodies,
@@ -9,15 +10,16 @@ import {
   type Vector,
   World,
 } from 'matter-js';
+import { MAPS } from '~/assets/maps';
 import { SceneBox } from '~/components/SceneBox';
 import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS, EMOJIS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
 import { useSound } from '~/hooks/useSound';
 import { opacity } from '~/util/color';
-import { MAP_1 } from '~/util/maps';
 import {
   centroid,
+  fillInsideVerticesWithColor,
   fillOutsideVerticesWithColor,
   PERFECTLY_ELASTIC,
   renderCheckeredFlagForNonUniformBody,
@@ -28,25 +30,27 @@ const SQUARE_SIZE = 20;
 const SQUARE_START_OFFSET = { x: -10, y: -10 };
 const INITIAL_VELOCITY = 5;
 
+const EDGE_THICKNESS = 5;
+
 const ZONE_COLLISION_CATEGORY = 0x0001;
 const SQUARE_COLLISION_CATEGORY = 0x0002;
 
 const FINISHING_SPOTS = [
   {
     emojis: [EMOJIS.CROWN, EMOJIS.GOLD_MEDAL],
-    location: { x: 124.75, y: 796.5 },
+    locationOffset: { x: 65, y: 5 },
   },
   {
     emojis: [EMOJIS.PARTY, EMOJIS.SILVER_MEDAL],
-    location: { x: 92.75, y: 846.5 },
+    locationOffset: { x: 35, y: 45 },
   },
   {
     emojis: [EMOJIS.HAPPY, EMOJIS.BRONZE_MEDAL],
-    location: { x: 173.75, y: 857.5 },
+    locationOffset: { x: 95, y: 50 },
   },
   {
     emojis: [EMOJIS.SAD],
-    location: { x: 125.75, y: 924.5 },
+    locationOffset: { x: 70, y: 110 },
   },
 ];
 
@@ -60,6 +64,7 @@ enum BodyLabel {
   GREEN_SQUARE = 'green-square',
   BLUE_SQUARE = 'blue-square',
   ORANGE_SQUARE = 'orange-square',
+  OBSTACLE = 'obstacle',
 }
 
 const drawEmojiToCanvas = (
@@ -77,20 +82,38 @@ const drawEmojiToCanvas = (
 const drawFinisherEmojis = (
   canvas: HTMLCanvasElement,
   emojis: string[],
-  position: Vector,
+  location: Vector,
 ) => {
-  const [x, y] = [position.x - 12, position.y - 12];
   emojis.forEach((emoji, index) => {
-    drawEmojiToCanvas(canvas, emoji, x + index * 12, y);
+    drawEmojiToCanvas(
+      canvas,
+      emoji,
+      location.x + index * 12 + 10,
+      location.y + 10,
+    );
   });
 };
 
-const drawPodium = (canvas: HTMLCanvasElement) => {
+const drawPodium = (
+  canvas: HTMLCanvasElement,
+  podiumConfiguration: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  },
+) => {
   const img = new Image();
   img.src = 'podium.png';
   img.onload = function () {
     const ctx = canvas.getContext('2d');
-    ctx?.drawImage(img, 40, 780, 175, 175);
+    ctx?.drawImage(
+      img,
+      podiumConfiguration.x,
+      podiumConfiguration.y,
+      podiumConfiguration.width,
+      podiumConfiguration.height,
+    );
   };
 };
 
@@ -115,14 +138,12 @@ const createSquare = (
 
 export const SquareRace = () => {
   const {
-    state: { isRunning, sound },
+    state: { isRunning, selectedMap, sound },
   } = useAppContext();
   const { boxRef, canvasRef, engine, runner } = useEngine({
-    engineOptions: {
-      gravity: { x: 0, y: 0.01 },
-    },
     isRunning,
   });
+  const map = MAPS[selectedMap as keyof typeof MAPS];
   const finishers = useRef<string[]>([]);
   const bounceSound = useSound(sound, 10);
 
@@ -140,7 +161,7 @@ export const SquareRace = () => {
     });
 
     const bounds = verticesToEdges(
-      MAP_1.edges,
+      map.edges,
       {
         label: BodyLabel.WALL,
         render: {
@@ -148,7 +169,7 @@ export const SquareRace = () => {
           strokeStyle: COLORS.WHITE,
         },
       },
-      5,
+      EDGE_THICKNESS,
       1.25,
     );
 
@@ -156,14 +177,14 @@ export const SquareRace = () => {
       'secondary-canvas',
     ) as HTMLCanvasElement;
 
-    fillOutsideVerticesWithColor(secondaryCanvas, MAP_1.edges, COLORS.GRAY);
-    drawPodium(secondaryCanvas);
+    fillOutsideVerticesWithColor(secondaryCanvas, map.edges, COLORS.GRAY);
+    drawPodium(secondaryCanvas, map.podium);
 
-    const startCentroid = centroid(MAP_1.start);
+    const startCentroid = centroid(map.start);
     const startZone = Bodies.fromVertices(
       startCentroid.x,
       startCentroid.y,
-      [MAP_1.start],
+      [map.start],
       {
         collisionFilter: {
           category: ZONE_COLLISION_CATEGORY,
@@ -177,11 +198,11 @@ export const SquareRace = () => {
       },
     );
 
-    const endCentroid = centroid(MAP_1.end);
+    const endCentroid = centroid(map.end);
     const endZone = Bodies.fromVertices(
       endCentroid.x,
       endCentroid.y,
-      [MAP_1.end],
+      [map.end],
       {
         collisionFilter: {
           category: ZONE_COLLISION_CATEGORY,
@@ -195,6 +216,23 @@ export const SquareRace = () => {
         },
       },
     );
+
+    // Draw Obstacles
+    // const obstacles = map.obstacles.map((obstacle) => {
+    //   fillInsideVerticesWithColor(secondaryCanvas, obstacle, COLORS.RED);
+    //   return verticesToEdges(
+    //     obstacle,
+    //     {
+    //       isStatic: true,
+    //       label: BodyLabel.OBSTACLE,
+    //       render: {
+    //         fillStyle: COLORS.WHITE,
+    //       },
+    //     },
+    //     EDGE_THICKNESS,
+    //     1,
+    //   );
+    // });
 
     const square1 = createSquare(
       startCentroid.x - SQUARE_SIZE + SQUARE_START_OFFSET.x - 2.5,
@@ -226,7 +264,13 @@ export const SquareRace = () => {
 
     const squares = [square1, square2, square3, square4];
 
-    World.add(engine.world, [bounds, startZone, endZone, ...squares]);
+    World.add(engine.world, [
+      bounds,
+      startZone,
+      endZone,
+      ...squares,
+      // ...obstacles,
+    ]);
 
     squares.forEach((square) => {
       Body.setVelocity(square, {
@@ -234,6 +278,21 @@ export const SquareRace = () => {
         y: Math.random() * INITIAL_VELOCITY,
       });
     });
+
+    const onSquareFinish = (square: Matter.Body) => {
+      Body.setStatic(square, true);
+      square.label = BodyLabel.STATIC_SQUARE;
+      // Add to finishsers and move to podium location
+      const finisherSpot = FINISHING_SPOTS[finishers.current.length];
+      const emojiPodiumOffset = finisherSpot.locationOffset;
+      const emojiLocation = {
+        x: map.podium.x + emojiPodiumOffset.x,
+        y: map.podium.y + emojiPodiumOffset.y,
+      };
+      Body.setPosition(square, emojiLocation);
+      finishers.current.push(square.label);
+      drawFinisherEmojis(secondaryCanvas, finisherSpot.emojis, emojiLocation);
+    };
 
     Events.on(engine, 'collisionStart', (event) => {
       event.pairs.forEach((pair) => {
@@ -248,34 +307,14 @@ export const SquareRace = () => {
             ? pair.bodyA
             : pair.bodyB;
           if (square.label.includes('square')) {
-            Body.setStatic(square, true);
-            square.label = BodyLabel.STATIC_SQUARE;
-            // Add to finishsers and move to podium location
-            const finisherSpot = FINISHING_SPOTS[finishers.current.length];
-            const podiumLocation = finisherSpot.location;
-            Body.setPosition(square, podiumLocation);
-            finishers.current.push(square.label);
-            drawFinisherEmojis(
-              secondaryCanvas,
-              finisherSpot.emojis,
-              podiumLocation,
-            );
-            if (finishers.current.length === 3) {
+            onSquareFinish(square);
+            if (finishers.current.length === FINISHING_SPOTS.length - 1) {
               // Find the remaining square and move it to the podium
               const remainingSquare = squares.find(
                 (s) => !finishers.current.includes(s.label),
               );
               if (remainingSquare) {
-                const finalFinisherSpot = FINISHING_SPOTS[3];
-                const podiumLocation = finalFinisherSpot.location;
-                remainingSquare.label = BodyLabel.STATIC_SQUARE;
-                Body.setStatic(remainingSquare, true);
-                Body.setPosition(remainingSquare, podiumLocation);
-                drawFinisherEmojis(
-                  secondaryCanvas,
-                  finalFinisherSpot.emojis,
-                  podiumLocation,
-                );
+                onSquareFinish(remainingSquare);
               }
             }
           }
@@ -295,7 +334,7 @@ export const SquareRace = () => {
       World.clear(engine.world, false);
       Engine.clear(engine);
     };
-  }, []);
+  }, [map]);
 
   return <SceneBox boxRef={boxRef} canvasRef={canvasRef} />;
 };
