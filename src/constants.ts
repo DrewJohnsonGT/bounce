@@ -16,6 +16,7 @@ export const COLORS = {
   LIGHT_PINK: '#ffb6c1',
   LIGHT_PURPLE: '#e6e6fa',
   LIGHT_YELLOW: '#ffffe0',
+  OFF_WHITE: '#f5f5f5',
   ORANGE: '#ffa500',
   PINK: '#ffc0cb',
   PURPLE: '#800080',

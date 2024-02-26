@@ -4,7 +4,7 @@ import { SceneBox } from '~/components/SceneBox';
 import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
-import { createHollowSquare } from '~/util/shapes';
+import { createHollowRectangle } from '~/util/shapes';
 
 const CONTAINER_SIZE = 500;
 const CONTAINER_WALL_THICKNESS = 5;
@@ -28,9 +28,10 @@ export const Blank = () => {
       },
     });
 
-    const squareSides = createHollowSquare({
+    const squareSides = createHollowRectangle({
       color: COLORS.WHITE,
-      side: CONTAINER_SIZE,
+      side1Length: CONTAINER_SIZE,
+      side2Length: CONTAINER_SIZE,
       thickness: CONTAINER_WALL_THICKNESS,
       x: CANVAS_WIDTH / 2,
       y: CANVAS_HEIGHT / 2,

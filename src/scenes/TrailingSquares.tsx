@@ -16,7 +16,7 @@ import { useEngine } from '~/hooks/useEngine';
 import { useSound } from '~/hooks/useSound';
 import { getDarkerVersionOfColor } from '~/util/color';
 import {
-  createHollowSquare,
+  createHollowRectangle,
   PERFECTLY_ELASTIC_INF_INTERTIA,
 } from '~/util/shapes';
 
@@ -73,7 +73,7 @@ export const TrailingSquares = () => {
       },
     });
 
-    const squareSides = createHollowSquare({
+    const squareSides = createHollowRectangle({
       additionalOptions: {
         collisionFilter: {
           category: WALL_COLLISION_CATEGORY,
@@ -81,7 +81,8 @@ export const TrailingSquares = () => {
         },
       },
       color: COLORS.WHITE,
-      side: CONTAINER_SIZE,
+      side1Length: CONTAINER_SIZE,
+      side2Length: CONTAINER_SIZE,
       thickness: CONTAINER_WALL_THICKNESS,
       x: CANVAS_WIDTH / 2,
       y: CANVAS_HEIGHT / 2,

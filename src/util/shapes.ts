@@ -23,17 +23,19 @@ export const PERFECTLY_ELASTIC: IChamferableBodyDefinition = {
   restitution: 1,
 };
 
-export const createHollowSquare = ({
+export const createHollowRectangle = ({
   additionalOptions = {},
   color,
-  side,
+  side1Length,
+  side2Length,
   thickness,
   x,
   y,
 }: {
   x: number;
   y: number;
-  side: number;
+  side1Length: number;
+  side2Length: number;
   thickness: number;
   color: string;
   additionalOptions?: Partial<IChamferableBodyDefinition>;
@@ -47,35 +49,35 @@ export const createHollowSquare = ({
   };
 
   const offset = thickness / 2;
-  const sideLength = side + thickness * 2;
+  const side1LengthWithThickness = side1Length + thickness * 2;
+  const side2LengthWithThickness = side2Length + thickness * 2;
 
-  // Adjust positions and dimensions to maintain the interior side^2 area
   const top = Bodies.rectangle(
     x,
-    y - side / 2 - offset,
-    sideLength,
+    y - side2Length / 2 - offset,
+    side1LengthWithThickness,
     thickness,
     rectangleDefinitionConfig,
   );
   const bottom = Bodies.rectangle(
     x,
-    y + side / 2 + offset,
-    sideLength,
+    y + side2Length / 2 + offset,
+    side1LengthWithThickness,
     thickness,
     rectangleDefinitionConfig,
   );
   const left = Bodies.rectangle(
-    x - side / 2 - offset,
+    x - side1Length / 2 - offset,
     y,
     thickness,
-    sideLength,
+    side2LengthWithThickness,
     rectangleDefinitionConfig,
   );
   const right = Bodies.rectangle(
-    x + side / 2 + offset,
+    x + side1Length / 2 + offset,
     y,
     thickness,
-    sideLength,
+    side2LengthWithThickness,
     rectangleDefinitionConfig,
   );
 

@@ -7,7 +7,7 @@ import { useEngine } from '~/hooks/useEngine';
 import { useSound } from '~/hooks/useSound';
 import { generateRandomColor } from '~/util/color';
 import {
-  createHollowSquare,
+  createHollowRectangle,
   getRandomPositionInsideSquareContainer,
   PERFECTLY_ELASTIC,
 } from '~/util/shapes';
@@ -51,9 +51,10 @@ export const BouncingSquaresWithSpin = () => {
       },
     });
 
-    const squareSides = createHollowSquare({
+    const squareSides = createHollowRectangle({
       color: COLORS.WHITE,
-      side: CONTAINER_SIZE,
+      side1Length: CONTAINER_SIZE,
+      side2Length: CONTAINER_SIZE,
       thickness: CONTAINER_WALL_THICKNESS,
       x: CANVAS_WIDTH / 2,
       y: CANVAS_HEIGHT / 2,

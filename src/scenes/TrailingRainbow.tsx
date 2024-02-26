@@ -16,7 +16,7 @@ import { useEngine } from '~/hooks/useEngine';
 import { useSound } from '~/hooks/useSound';
 import { getDarkerVersionOfColor, getRainbowColor } from '~/util/color';
 import {
-  createHollowSquare,
+  createHollowRectangle,
   PERFECTLY_ELASTIC_INF_INTERTIA,
 } from '~/util/shapes';
 
@@ -32,7 +32,7 @@ const SQUARE_FORCE = 10;
 const SQUARE_BORDER_COLOR = COLORS.BLACK;
 const FORCE_MULTIPLIER = 0.9; // 0.1, 0.3, 0.5, 0.9
 
-const CONTAINER_SIZE = 500;
+const CONTAINER_SIZE = 450;
 const CONTAINER_WALL_THICKNESS = 10;
 
 const TRAIL_MODULO = 3;
@@ -74,7 +74,7 @@ export const TrailingRainbow = () => {
       },
     });
 
-    const squareSides = createHollowSquare({
+    const squareSides = createHollowRectangle({
       additionalOptions: {
         collisionFilter: {
           category: WALL_COLLISION_CATEGORY,
@@ -82,7 +82,8 @@ export const TrailingRainbow = () => {
         },
       },
       color: COLORS.WHITE,
-      side: CONTAINER_SIZE,
+      side1Length: CONTAINER_SIZE,
+      side2Length: CONTAINER_SIZE,
       thickness: CONTAINER_WALL_THICKNESS,
       x: CANVAS_WIDTH / 2,
       y: CANVAS_HEIGHT / 2,
