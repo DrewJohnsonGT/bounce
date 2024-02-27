@@ -42,9 +42,9 @@ export const createHollowRectangle = ({
 }): Body[] => {
   const rectangleDefinitionConfig = {
     isStatic: true,
+    label: 'static-wall',
     render: { fillStyle: color },
     ...PERFECTLY_ELASTIC_INF_INTERTIA,
-    label: 'static-wall',
     ...additionalOptions,
   };
 
@@ -234,4 +234,53 @@ export const renderCheckeredFlagForNonUniformBody = (
     }
   }
   context.restore();
+};
+
+export const createHollowCircle = ({
+  additionalOptions,
+  color,
+  radius,
+  segments,
+  thickness,
+  x,
+  y,
+}: {
+  x: number;
+  y: number;
+  thickness: number;
+  color: string;
+  radius: number;
+  segments: number;
+  additionalOptions?: Partial<IChamferableBodyDefinition>;
+}): Composite => {
+  const circleParts = [];
+  for (let i = 0; i < segments; i++) {
+    const angle = ((2 * Math.PI) / segments) * i;
+    const innerRadius = radius - thickness;
+    const outerSegmentLength = (2 * Math.PI * radius) / segments;
+    const posX =
+      x + innerRadius * Math.cos(angle) + (thickness * Math.cos(angle)) / 2;
+    const posY =
+      y + innerRadius * Math.sin(angle) + (thickness * Math.sin(angle)) / 2;
+
+    const segment = Bodies.rectangle(
+      posX,
+      posY,
+      outerSegmentLength,
+      thickness,
+      {
+        ...PERFECTLY_ELASTIC_INF_INTERTIA,
+        ...additionalOptions,
+        angle,
+        isStatic: true,
+        render: {
+          fillStyle: color,
+        },
+      },
+    );
+
+    circleParts.push(segment);
+  }
+
+  return Composite.create({ bodies: circleParts });
 };

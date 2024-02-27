@@ -4,7 +4,7 @@ import { SceneBox } from '~/components/SceneBox';
 import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
-import { useSound } from '~/hooks/useSound';
+import { useSoundEffect } from '~/hooks/useSoundEffect';
 import {
   createHollowRectangle,
   PERFECTLY_ELASTIC_INF_INTERTIA,
@@ -67,7 +67,7 @@ export const Letters = () => {
     },
     isRunning,
   });
-  const bounceSound = useSound(sound);
+  const bounceSound = useSoundEffect(sound, isRunning);
 
   useEffect(() => {
     const render = Render.create({

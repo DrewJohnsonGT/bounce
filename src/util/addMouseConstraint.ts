@@ -18,6 +18,8 @@ export const addMouseConstraint = (engine: Engine, render: Render) => {
   Events.on(mouseConstraint, 'mousedown', (event) => {
     const mousePosition = event.mouse.position;
     console.log('Mouse clicked at:', mousePosition);
+    const clickedBody = event.source.body;
+    console.log('Clicked body:', clickedBody);
   });
   World.add(engine.world, mouseConstraint);
 };

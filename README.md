@@ -14,3 +14,4 @@
 - Bouncing with different shapes - shapes need to fit in their holes
 - Bouncing letters - pause to make a word
 - Reading rainbow bounces
+- Upgrade sound hook to better handle concurrency

@@ -13,7 +13,7 @@ import { SceneBox } from '~/components/SceneBox';
 import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
-import { useSound } from '~/hooks/useSound';
+import { useSoundEffect } from '~/hooks/useSoundEffect';
 import { getDarkerVersionOfColor, getRainbowColor } from '~/util/color';
 import {
   createHollowRectangle,
@@ -59,7 +59,7 @@ export const TrailingRainbows = () => {
     state: { isRunning, sound },
   } = useAppContext();
   const { boxRef, canvasRef, engine, runner } = useEngine({ isRunning });
-  const bounceSound = useSound(sound, 10);
+  const bounceSound = useSoundEffect(sound, 10);
 
   useEffect(() => {
     const render = Render.create({

@@ -6,9 +6,15 @@ interface SceneBoxProps {
   boxRef: React.RefObject<HTMLDivElement>;
   canvasRef: React.RefObject<HTMLCanvasElement>;
   logoOffset?: { x: number; y: number };
+  secondaryCanvasColor?: string;
 }
 
-export const SceneBox = ({ boxRef, canvasRef, logoOffset }: SceneBoxProps) => {
+export const SceneBox = ({
+  boxRef,
+  canvasRef,
+  logoOffset,
+  secondaryCanvasColor,
+}: SceneBoxProps) => {
   return (
     <div
       ref={boxRef}
@@ -23,7 +29,7 @@ export const SceneBox = ({ boxRef, canvasRef, logoOffset }: SceneBoxProps) => {
         height={CANVAS_HEIGHT}
         width={CANVAS_WIDTH}
         style={{
-          backgroundColor: 'transparent',
+          backgroundColor: secondaryCanvasColor || 'transparent',
           height: CANVAS_HEIGHT,
           position: 'absolute',
           width: CANVAS_WIDTH,

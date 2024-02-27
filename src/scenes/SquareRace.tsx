@@ -15,7 +15,7 @@ import { SceneBox } from '~/components/SceneBox';
 import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS, EMOJIS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
-import { useSound } from '~/hooks/useSound';
+import { useSoundEffect } from '~/hooks/useSoundEffect';
 import { opacity } from '~/util/color';
 import {
   centroid,
@@ -145,7 +145,7 @@ export const SquareRace = () => {
   });
   const map = MAPS[selectedMap as keyof typeof MAPS];
   const finishers = useRef<string[]>([]);
-  const bounceSound = useSound(sound, 10);
+  const bounceSound = useSoundEffect(sound, 10);
 
   useEffect(() => {
     const render = Render.create({
