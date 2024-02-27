@@ -1,7 +1,7 @@
 import { readdir, writeFile } from 'fs/promises';
 import { join } from 'path';
 
-const audioDirectory = join(process.cwd(), 'public/audio');
+const audioDirectory = join(process.cwd(), 'public/sounds');
 const outputFile = join(process.cwd(), 'src/assets/audioList.json');
 
 try {

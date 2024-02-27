@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { Howl } from 'howler';
 
-const AUDIO_PATH = 'audio';
+const AUDIO_PATH = 'sounds';
 
 export const useSoundEffect = (soundUrl: string, isRunning: boolean) => {
   const soundRef = useRef<Howl | null>(null);
