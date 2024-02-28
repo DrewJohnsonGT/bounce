@@ -3,6 +3,7 @@ import { Button, Stack } from '@chakra-ui/react';
 import { MapSelector } from '~/components/MapSelector';
 import { SceneSelector } from '~/components/SceneSelector';
 import { SoundSelector } from '~/components/SoundSelector';
+import { MidiSelector } from '~/components/MidiSelector';
 import { ActionType, useAppContext } from '~/hooks/useContext';
 import { SCENES } from '~/scenes';
 
@@ -33,6 +34,7 @@ export const App = () => {
           <SoundSelector />
           <SceneSelector />
           <MapSelector />
+          <MidiSelector />
         </Stack>
       </div>
       <main className="scene">

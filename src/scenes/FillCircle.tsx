@@ -4,7 +4,7 @@ import { SceneBox } from '~/components/SceneBox';
 import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
-import { useSoundEffect } from '~/hooks/useSoundEffect';
+import { useMidiTrack } from '~/hooks/useMidiTrack';
 import {
   createHollowCircle,
   PERFECTLY_ELASTIC_INF_INTERTIA,
@@ -23,7 +23,7 @@ let trailCounter = 0;
 
 export const FillCircle = () => {
   const {
-    state: { isRunning, sound },
+    state: { isRunning, midi },
   } = useAppContext();
   const { boxRef, canvasRef, engine, runner } = useEngine({
     engineOptions: {
@@ -35,7 +35,7 @@ export const FillCircle = () => {
     isRunning,
   });
 
-  const bounceSound = useSoundEffect(sound, isRunning);
+  const { togglePlay } = useMidiTrack(midi);
 
   useEffect(() => {
     const secondaryCanvas = document.getElementById(
@@ -125,8 +125,8 @@ export const FillCircle = () => {
     Events.on(engine, 'collisionStart', (event) => {
       event.pairs.forEach((pair) => {
         if (justCollided) return;
-        bounceSound();
 
+        togglePlay();
         const ballBody = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
         Body.scale(
           ballBody,

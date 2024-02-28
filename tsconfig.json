@@ -16,6 +16,6 @@
       "~/*": ["./src/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "bin/generateAudioList.js"],
+  "include": ["**/*.ts", "**/*.tsx", "bin/generateAudioLists.js"],
   "exclude": ["node_modules"]
 }

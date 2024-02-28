@@ -28,7 +28,7 @@ import {
 
 const SQUARE_SIZE = 20;
 const SQUARE_START_OFFSET = { x: -10, y: -10 };
-const INITIAL_VELOCITY = 5;
+const INITIAL_VELOCITY = 2.5;
 
 const EDGE_THICKNESS = 5;
 

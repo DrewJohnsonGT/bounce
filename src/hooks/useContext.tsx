@@ -1,12 +1,14 @@
 import { createContext, useContext, useReducer } from 'react';
-import SOUNDS from '~/assets/audioList.json';
+import MIDI from '~/assets/midiList.json';
+import SOUNDS from '~/assets/soundList.json';
 import { SCENES } from '~/scenes';
 
 const DEFAULT_STATE = {
   isRunning: false,
+  midi: MIDI[0],
   selectedMap: 2,
-  selectedScene: Object.keys(SCENES)[4],
-  sound: SOUNDS[4],
+  selectedScene: Object.keys(SCENES)[2],
+  sound: SOUNDS[18],
 };
 
 export type State = typeof DEFAULT_STATE;
@@ -16,6 +18,7 @@ export enum ActionType {
   SetSound = 'SET_SOUND',
   SetIsRunning = 'SET_IS_RUNNING',
   ChangeMap = 'CHANGE_MAP',
+  SetMidi = 'SET_MIDI',
 }
 
 interface Payloads {
@@ -23,6 +26,7 @@ interface Payloads {
   [ActionType.SetSound]: string;
   [ActionType.SetIsRunning]: boolean;
   [ActionType.ChangeMap]: number;
+  [ActionType.SetMidi]: string;
 }
 export type ActionMap<M extends Record<string, any>> = {
   [Key in keyof M]: M[Key] extends undefined
@@ -59,6 +63,11 @@ const reducer = (state: typeof DEFAULT_STATE, action: Actions) => {
       return {
         ...state,
         selectedMap: action.payload,
+      };
+    case ActionType.SetMidi:
+      return {
+        ...state,
+        midi: action.payload,
       };
     default:
       return state;
