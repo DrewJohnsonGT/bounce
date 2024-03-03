@@ -5,7 +5,7 @@ import { SCENES } from '~/scenes';
 
 const DEFAULT_STATE = {
   isRunning: false,
-  midi: MIDI[0],
+  midi: MIDI[2],
   selectedMap: 2,
   selectedScene: Object.keys(SCENES)[2],
   sound: SOUNDS[18],

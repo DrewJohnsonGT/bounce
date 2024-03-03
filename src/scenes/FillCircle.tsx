@@ -4,7 +4,7 @@ import { SceneBox } from '~/components/SceneBox';
 import { CANVAS_HEIGHT, CANVAS_WIDTH, COLORS } from '~/constants';
 import { useAppContext } from '~/hooks/useContext';
 import { useEngine } from '~/hooks/useEngine';
-import { useMidiTrack } from '~/hooks/useMidiTrack';
+import { useMidiTrackChunks } from '~/hooks/useMidiTrackChunks';
 import {
   createHollowCircle,
   PERFECTLY_ELASTIC_INF_INTERTIA,
@@ -14,7 +14,7 @@ const CONTAINER_SIZE = 300;
 const CONTAINER_WALL_THICKNESS = 100;
 
 const BALL_SIZE = 30;
-const INITIAL_VELOCITY = 2;
+const INITIAL_VELOCITY = 3;
 const BALL_SCALE_FACTOR = 1.02;
 const TRAIL_MODULO = 2;
 
@@ -35,7 +35,7 @@ export const FillCircle = () => {
     isRunning,
   });
 
-  const { togglePlay } = useMidiTrack(midi);
+  const { playNextChunk } = useMidiTrackChunks({ filePath: midi });
 
   useEffect(() => {
     const secondaryCanvas = document.getElementById(
@@ -70,7 +70,7 @@ export const FillCircle = () => {
     const backgroundColorCircle = Bodies.circle(
       CANVAS_WIDTH / 2,
       CANVAS_HEIGHT / 2,
-      CONTAINER_SIZE - 50,
+      CONTAINER_SIZE - 45,
       {
         collisionFilter: {
           mask: 0,
@@ -88,7 +88,7 @@ export const FillCircle = () => {
       ctx.arc(
         backgroundColorCircle.position.x,
         backgroundColorCircle.position.y,
-        CONTAINER_SIZE - 55,
+        CONTAINER_SIZE - 60,
         0,
         2 * Math.PI,
       );
@@ -105,7 +105,7 @@ export const FillCircle = () => {
         label: 'ball',
         render: {
           fillStyle: COLORS.TRANSPARENT,
-          lineWidth: 4,
+          lineWidth: 2,
           strokeStyle: COLORS.WHITE,
         },
       },
@@ -118,15 +118,15 @@ export const FillCircle = () => {
     ]);
 
     Body.setVelocity(bouncingBall, {
-      x: INITIAL_VELOCITY,
-      y: INITIAL_VELOCITY,
+      x: INITIAL_VELOCITY * Math.random(),
+      y: INITIAL_VELOCITY * Math.random(),
     });
 
     Events.on(engine, 'collisionStart', (event) => {
       event.pairs.forEach((pair) => {
         if (justCollided) return;
 
-        togglePlay();
+        playNextChunk();
         const ballBody = pair.bodyA.label === 'ball' ? pair.bodyA : pair.bodyB;
         Body.scale(
           ballBody,

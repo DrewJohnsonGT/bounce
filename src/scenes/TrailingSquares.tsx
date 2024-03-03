@@ -28,8 +28,8 @@ const SQUARE_COLLISION_CATEGORY = 0x0001;
 const WALL_COLLISION_CATEGORY = 0x0002;
 
 const SQUARE_SIZE = 50;
-const SQUARE_FORCE = 5;
-const FORCE_MULTIPLIER = 0.75; // 0.1, 0.3, 0.5, 0.9
+const SQUARE_FORCE = 1;
+const FORCE_MULTIPLIER = 0.025; // 0.1, 0.3, 0.5, 0.9
 
 const CONTAINER_SIZE = 450;
 const CONTAINER_WALL_THICKNESS = 10;
@@ -97,48 +97,29 @@ export const TrailingSquares = () => {
     const square2 = createSquare(
       CANVAS_WIDTH / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
       CANVAS_HEIGHT / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
-      COLORS.GREEN,
+      COLORS.BLUE,
     );
 
     const square3 = createSquare(
       CANVAS_WIDTH / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
       CANVAS_HEIGHT / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
-      COLORS.BLUE,
+      COLORS.GREEN,
     );
 
     const square4 = createSquare(
       CANVAS_WIDTH / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
       CANVAS_HEIGHT / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
-      COLORS.ORANGE,
+      COLORS.DARKER_ORANGE,
     );
 
     const squares = [square1, square2, square3, square4];
 
     World.add(engine.world, [...squareSides, ...squares]);
 
-    Body.applyForce(
-      square1,
-      { x: 0, y: 0 },
-      { x: SQUARE_FORCE * FORCE_MULTIPLIER, y: SQUARE_FORCE },
-    );
-
-    Body.applyForce(
-      square2,
-      { x: 0, y: 0 },
-      { x: -SQUARE_FORCE * FORCE_MULTIPLIER, y: -SQUARE_FORCE },
-    );
-
-    Body.applyForce(
-      square3,
-      { x: 0, y: 0 },
-      { x: -SQUARE_FORCE, y: SQUARE_FORCE * FORCE_MULTIPLIER },
-    );
-
-    Body.applyForce(
-      square4,
-      { x: 0, y: 0 },
-      { x: SQUARE_FORCE, y: -SQUARE_FORCE * FORCE_MULTIPLIER },
-    );
+    Body.setVelocity(square1, { x: SQUARE_FORCE, y: SQUARE_FORCE * FORCE_MULTIPLIER });
+    Body.setVelocity(square2, { x: -SQUARE_FORCE * FORCE_MULTIPLIER, y: -SQUARE_FORCE });
+    Body.setVelocity(square3, { x: SQUARE_FORCE, y: SQUARE_FORCE * FORCE_MULTIPLIER });
+    Body.setVelocity(square4, { x: -SQUARE_FORCE * FORCE_MULTIPLIER, y: -SQUARE_FORCE });
 
     const secondaryCanvas = document.getElementById(
       'secondary-canvas',

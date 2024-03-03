@@ -28,7 +28,7 @@ import {
 
 const SQUARE_SIZE = 20;
 const SQUARE_START_OFFSET = { x: -10, y: -10 };
-const INITIAL_VELOCITY = 2.5;
+const INITIAL_VELOCITY = 2;
 
 const EDGE_THICKNESS = 5;
 
@@ -145,7 +145,7 @@ export const SquareRace = () => {
   });
   const map = MAPS[selectedMap as keyof typeof MAPS];
   const finishers = useRef<string[]>([]);
-  const bounceSound = useSoundEffect(sound, 10);
+  const bounceSound = useSoundEffect(sound, isRunning);
 
   useEffect(() => {
     const render = Render.create({

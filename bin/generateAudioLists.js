@@ -10,7 +10,7 @@ const processDirectory = async (
     const files = await readdir(String(directoryPath));
     console.log(`Files in the directory ${directoryPath}:`, files);
     const filteredFiles = files.filter((file) =>
-      new RegExp(`\\.(${fileExtensions.join('|')})$`).test(file),
+      new RegExp(`\\.(${fileExtensions.join('|')})$`).test(file.toLowerCase()),
     );
     await writeFile(String(outputFilePath), JSON.stringify(filteredFiles));
     console.log(`List was successfully generated at ${outputFilePath}`);

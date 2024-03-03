@@ -30,12 +30,13 @@ const WALL_COLLISION_CATEGORY = 0x0002;
 const SQUARE_SIZE = 50;
 const SQUARE_FORCE = 10;
 const SQUARE_BORDER_COLOR = COLORS.BLACK;
-const FORCE_MULTIPLIER = 0.9; // 0.1, 0.3, 0.5, 0.9
+const FORCE_MULTIPLIER = 0.3; // 0.1, 0.3, 0.5, 0.9
 
-const CONTAINER_SIZE = 450;
+const CONTAINER_WIDTH = 450;
+const CONTAINER_HEIGHT = 550;
 const CONTAINER_WALL_THICKNESS = 10;
 
-const TRAIL_MODULO = 3;
+const TRAIL_MODULO = 2;
 let trailCounter = 0;
 
 const createSquare = (x: number, y: number, color: string) => {
@@ -82,26 +83,22 @@ export const TrailingRainbow = () => {
         },
       },
       color: COLORS.WHITE,
-      side1Length: CONTAINER_SIZE,
-      side2Length: CONTAINER_SIZE,
+      side1Length: CONTAINER_WIDTH,
+      side2Length: CONTAINER_HEIGHT,
       thickness: CONTAINER_WALL_THICKNESS,
       x: CANVAS_WIDTH / 2,
       y: CANVAS_HEIGHT / 2,
     });
 
     const square = createSquare(
-      CANVAS_WIDTH / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
-      CANVAS_HEIGHT / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
+      CANVAS_WIDTH / 2 - CONTAINER_WIDTH / 2 + SQUARE_SIZE / 2,
+      CANVAS_HEIGHT / 2 - CONTAINER_HEIGHT / 2 + SQUARE_SIZE / 2,
       COLORS.RED,
     );
 
     World.add(engine.world, [...squareSides, square]);
 
-    Body.applyForce(
-      square,
-      { x: 0, y: 0 },
-      { x: SQUARE_FORCE * FORCE_MULTIPLIER, y: SQUARE_FORCE },
-    );
+    Body.setVelocity(square, { x: SQUARE_FORCE * FORCE_MULTIPLIER, y: SQUARE_FORCE * FORCE_MULTIPLIER });
 
     const secondaryCanvas = document.getElementById(
       'secondary-canvas',
