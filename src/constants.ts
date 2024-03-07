@@ -6,6 +6,7 @@ export const COLORS = {
   BLUE: '#0000ff',
   BROWN: '#a52a2a',
   DARK_ORANGE: '#ff8c00',
+  DARK_PINK: '#ff69b4',
   DARKER_ORANGE: '#f56042',
   GRAY: '#808080',
   GREEN: '#008000',

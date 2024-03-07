@@ -16,6 +16,11 @@ export const Blank = () => {
   const { boxRef, canvasRef, engine, runner } = useEngine({ isRunning });
 
   useEffect(() => {
+    // const secondaryCanvas = document.getElementById(
+    //   'secondary-canvas',
+    // ) as HTMLCanvasElement;
+    // const ctx = secondaryCanvas?.getContext('2d');
+
     const render = Render.create({
       canvas: canvasRef.current || undefined,
       element: boxRef.current || undefined,
