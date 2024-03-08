@@ -24,18 +24,18 @@ interface TrailSquare {
   position: Vector;
 }
 
-const SQUARE_COLLISION_CATEGORY = 0x0001;
+const SQUARE_COLLISION_CATEGORY = 0x0002;
 const WALL_COLLISION_CATEGORY = 0x0002;
 
 const SQUARE_SIZE = 50;
 const SQUARE_FORCE = 5;
-const SQUARE_BORDER_COLOR = COLORS.WHITE;
-const FORCE_MULTIPLIER = 0.3; // 0.1, 0.3, 0.5, 0.9
+const SQUARE_BORDER_COLOR = COLORS.BLACK;
+const FORCE_MULTIPLIER = 0.1; // 0.1, 0.3, 0.5, 0.9
 
 const CONTAINER_SIZE = 500;
 const CONTAINER_WALL_THICKNESS = 10;
 
-const TRAIL_MODULO = 3;
+const TRAIL_MODULO = 4;
 let trailCounter = 0;
 
 const createSquare = (x: number, y: number, color: string) => {
@@ -190,7 +190,7 @@ export const TrailingRainbows = () => {
           SQUARE_SIZE,
         );
         render.context.strokeStyle = SQUARE_BORDER_COLOR;
-        render.context.lineWidth = 2;
+        render.context.lineWidth = 1;
         render.context.strokeRect(
           position.x - SQUARE_SIZE / 2,
           position.y - SQUARE_SIZE / 2,

@@ -26,31 +26,41 @@ import {
   verticesToEdges,
 } from '~/util/shapes';
 
-const SQUARE_SIZE = 20;
-const SQUARE_START_OFFSET = { x: -10, y: -10 };
+const SQUARE_SIZE = 16;
+const MIN_SQUARE_SPACING = 2;
 const INITIAL_VELOCITY = 2;
 
 const EDGE_THICKNESS = 5;
 
+const MAP_BACKGROUND_COLOR = COLORS.LIGHT_BLUE;
+const OBSTACLE_COLOR = COLORS.LIGHT_BROWN;
+const BORDER_COLOR = COLORS.GRAY;
+const OBSTACLE_BORDER_COLOR = COLORS.GRAY;
+
 const ZONE_COLLISION_CATEGORY = 0x0001;
 const SQUARE_COLLISION_CATEGORY = 0x0002;
+
+const GRAVITY = {
+  x: 0,
+  y: 0.001,
+};
 
 const FINISHING_SPOTS = [
   {
     emojis: [EMOJIS.CROWN, EMOJIS.GOLD_MEDAL],
-    locationOffset: { x: 65, y: 5 },
+    locationOffset: { x: 0.464, y: 0.036 },
   },
   {
     emojis: [EMOJIS.PARTY, EMOJIS.SILVER_MEDAL],
-    locationOffset: { x: 35, y: 45 },
+    locationOffset: { x: 0.25, y: 0.321 },
   },
   {
     emojis: [EMOJIS.HAPPY, EMOJIS.BRONZE_MEDAL],
-    locationOffset: { x: 95, y: 50 },
+    locationOffset: { x: 0.679, y: 0.357 },
   },
   {
     emojis: [EMOJIS.SAD],
-    locationOffset: { x: 70, y: 110 },
+    locationOffset: { x: 0.5, y: 0.786 },
   },
 ];
 
@@ -136,11 +146,54 @@ const createSquare = (
   });
 };
 
+const getStartingPointsForSquares = (
+  zone: Matter.Body,
+  numberOfSquares: number,
+): Array<{ x: number; y: number }> => {
+  const positions: Array<{ x: number; y: number }> = [];
+  const zoneBounds = zone.bounds;
+  const usableWidth = zoneBounds.max.x - zoneBounds.min.x - SQUARE_SIZE;
+  const usableHeight = zoneBounds.max.y - zoneBounds.min.y - SQUARE_SIZE;
+
+  const gridCellSize = SQUARE_SIZE + MIN_SQUARE_SPACING;
+
+  const cols = Math.floor(usableWidth / gridCellSize);
+  const rows = Math.floor(usableHeight / gridCellSize);
+
+  const offsetX =
+    (zoneBounds.max.x -
+      zoneBounds.min.x -
+      (cols * gridCellSize - MIN_SQUARE_SPACING)) /
+    2;
+  const offsetY =
+    (zoneBounds.max.y -
+      zoneBounds.min.y -
+      (rows * gridCellSize - MIN_SQUARE_SPACING)) /
+    2;
+
+  let placedSquares = 0;
+  for (let i = 0; i < cols && placedSquares < numberOfSquares; i++) {
+    for (let j = 0; j < rows && placedSquares < numberOfSquares; j++) {
+      const posX = zoneBounds.min.x + offsetX + i * gridCellSize;
+      const posY = zoneBounds.min.y + offsetY + j * gridCellSize;
+
+      positions.push({ x: posX + SQUARE_SIZE / 2, y: posY + SQUARE_SIZE / 2 });
+      placedSquares++;
+      if (placedSquares >= numberOfSquares) break;
+    }
+  }
+
+  return positions;
+};
+
 export const SquareRace = () => {
   const {
     state: { isRunning, selectedMap, sound },
   } = useAppContext();
   const { boxRef, canvasRef, engine, runner } = useEngine({
+    engineOptions: {
+      gravity: GRAVITY,
+    },
     isRunning,
   });
   const map = MAPS[selectedMap as keyof typeof MAPS];
@@ -165,8 +218,8 @@ export const SquareRace = () => {
       {
         label: BodyLabel.WALL,
         render: {
-          fillStyle: COLORS.WHITE,
-          strokeStyle: COLORS.WHITE,
+          fillStyle: BORDER_COLOR,
+          strokeStyle: BORDER_COLOR,
         },
       },
       EDGE_THICKNESS,
@@ -177,7 +230,11 @@ export const SquareRace = () => {
       'secondary-canvas',
     ) as HTMLCanvasElement;
 
-    fillOutsideVerticesWithColor(secondaryCanvas, map.edges, COLORS.GRAY);
+    fillOutsideVerticesWithColor(
+      secondaryCanvas,
+      map.edges,
+      MAP_BACKGROUND_COLOR,
+    );
     drawPodium(secondaryCanvas, map.podium);
 
     const startCentroid = centroid(map.start);
@@ -198,6 +255,7 @@ export const SquareRace = () => {
       },
     );
 
+    const startPositions = getStartingPointsForSquares(startZone, 4);
     const endCentroid = centroid(map.end);
     const endZone = Bodies.fromVertices(
       endCentroid.x,
@@ -218,14 +276,14 @@ export const SquareRace = () => {
     );
 
     const obstacles = map.obstacles.map((obstacle) => {
-      fillInsideVerticesWithColor(secondaryCanvas, obstacle, COLORS.PURPLE);
+      fillInsideVerticesWithColor(secondaryCanvas, obstacle, OBSTACLE_COLOR);
       return verticesToEdges(
         obstacle,
         {
           isStatic: true,
           label: BodyLabel.OBSTACLE,
           render: {
-            fillStyle: COLORS.WHITE,
+            fillStyle: OBSTACLE_BORDER_COLOR,
           },
         },
         EDGE_THICKNESS,
@@ -234,29 +292,29 @@ export const SquareRace = () => {
     });
 
     const square1 = createSquare(
-      startCentroid.x - SQUARE_SIZE + SQUARE_START_OFFSET.x - 2.5,
-      startCentroid.y + SQUARE_SIZE / 2 + SQUARE_START_OFFSET.y,
+      startPositions[0].x,
+      startPositions[0].y,
       COLORS.BLUE,
       BodyLabel.BLUE_SQUARE,
     );
 
     const square2 = createSquare(
-      startCentroid.x + SQUARE_SIZE * 2 + SQUARE_START_OFFSET.x + 5,
-      startCentroid.y + SQUARE_SIZE / 2 + SQUARE_START_OFFSET.y,
+      startPositions[1].x,
+      startPositions[1].y,
       COLORS.GREEN,
       BodyLabel.GREEN_SQUARE,
     );
 
     const square3 = createSquare(
-      startCentroid.x + SQUARE_START_OFFSET.x,
-      startCentroid.y + SQUARE_SIZE / 2 + SQUARE_START_OFFSET.y,
+      startPositions[2].x,
+      startPositions[2].y,
       COLORS.RED,
       BodyLabel.RED_SQUARE,
     );
 
     const square4 = createSquare(
-      startCentroid.x + SQUARE_SIZE + SQUARE_START_OFFSET.x + 2.5,
-      startCentroid.y + SQUARE_SIZE / 2 + SQUARE_START_OFFSET.y,
+      startPositions[3].x,
+      startPositions[3].y,
       COLORS.DARKER_ORANGE,
       BodyLabel.ORANGE_SQUARE,
     );
@@ -285,8 +343,8 @@ export const SquareRace = () => {
       const finisherSpot = FINISHING_SPOTS[finishers.current.length];
       const emojiPodiumOffset = finisherSpot.locationOffset;
       const emojiLocation = {
-        x: map.podium.x + emojiPodiumOffset.x,
-        y: map.podium.y + emojiPodiumOffset.y,
+        x: map.podium.x + emojiPodiumOffset.x * map.podium.width,
+        y: map.podium.y + emojiPodiumOffset.y * map.podium.height,
       };
       Body.setPosition(square, emojiLocation);
       finishers.current.push(square.label);
@@ -335,5 +393,14 @@ export const SquareRace = () => {
     };
   }, [map]);
 
-  return <SceneBox boxRef={boxRef} canvasRef={canvasRef} />;
+  return (
+    <SceneBox
+      boxRef={boxRef}
+      canvasRef={canvasRef}
+      logoOffset={{
+        x: -100,
+        y: -50,
+      }}
+    />
+  );
 };

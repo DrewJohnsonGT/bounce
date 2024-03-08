@@ -51,7 +51,7 @@ export const SceneBox = ({
         style={{
           height: LOGO_SIZE,
           left: `calc(50% - ${LOGO_SIZE / 2}px + ${logoOffset?.x || 0}px)`,
-          opacity: '0.1',
+          opacity: '0.2',
           position: 'absolute',
           top: `calc(50% - ${LOGO_SIZE / 2}px + ${logoOffset?.y || 0}px)`,
           width: LOGO_SIZE,
