@@ -30,12 +30,13 @@ const WALL_COLLISION_CATEGORY = 0x0002;
 const SQUARE_SIZE = 50;
 const SQUARE_FORCE = 5;
 const SQUARE_BORDER_COLOR = COLORS.BLACK;
-const FORCE_MULTIPLIER = 0.1; // 0.1, 0.3, 0.5, 0.9
+const shouldDrawBorders = false;
+const FORCE_MULTIPLIER = 0.3; // 0.1, 0.3, 0.5, 0.9
 
 const CONTAINER_SIZE = 500;
 const CONTAINER_WALL_THICKNESS = 10;
 
-const TRAIL_MODULO = 4;
+const TRAIL_MODULO = 1;
 let trailCounter = 0;
 
 const createSquare = (x: number, y: number, color: string) => {
@@ -169,14 +170,16 @@ export const TrailingRainbows = () => {
           SQUARE_SIZE,
           SQUARE_SIZE,
         );
-        ctx.strokeStyle = SQUARE_BORDER_COLOR;
-        ctx.lineWidth = 2;
-        ctx.strokeRect(
-          point.x - SQUARE_SIZE / 2,
-          point.y - SQUARE_SIZE / 2,
-          SQUARE_SIZE,
-          SQUARE_SIZE,
-        );
+        if (shouldDrawBorders) {
+          ctx.strokeStyle = SQUARE_BORDER_COLOR;
+          ctx.lineWidth = 2;
+          ctx.strokeRect(
+            point.x - SQUARE_SIZE / 2,
+            point.y - SQUARE_SIZE / 2,
+            SQUARE_SIZE,
+            SQUARE_SIZE,
+          );
+        }
       });
 
       // Draw the actual squares
@@ -189,14 +192,16 @@ export const TrailingRainbows = () => {
           SQUARE_SIZE,
           SQUARE_SIZE,
         );
-        render.context.strokeStyle = SQUARE_BORDER_COLOR;
-        render.context.lineWidth = 1;
-        render.context.strokeRect(
-          position.x - SQUARE_SIZE / 2,
-          position.y - SQUARE_SIZE / 2,
-          SQUARE_SIZE,
-          SQUARE_SIZE,
-        );
+        if (shouldDrawBorders) {
+          render.context.strokeStyle = SQUARE_BORDER_COLOR;
+          render.context.lineWidth = 1;
+          render.context.strokeRect(
+            position.x - SQUARE_SIZE / 2,
+            position.y - SQUARE_SIZE / 2,
+            SQUARE_SIZE,
+            SQUARE_SIZE,
+          );
+        }
       });
     });
 

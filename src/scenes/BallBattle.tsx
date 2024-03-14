@@ -32,7 +32,7 @@ const MAX_ARMOR = 3;
 const MIN_ARMOR_COLOR = COLORS.RED;
 const MAX_ARMOR_COLOR = COLORS.WHITE;
 
-const TEAMS = [BallTeam.GREEN, BallTeam.RED];
+const TEAMS = [BallTeam.GREEN, BallTeam.BLUE];
 
 const lerpColor = (color1: string, color2: string, factor: number): string => {
   const hex = (color: string) => parseInt(color.slice(1), 16);

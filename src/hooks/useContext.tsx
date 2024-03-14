@@ -7,8 +7,8 @@ const DEFAULT_STATE = {
   isRunning: false,
   midi: MIDI[2],
   selectedMap: 3,
-  selectedScene: Object.keys(SCENES)[5],
-  sound: SOUNDS[18],
+  selectedScene: Object.keys(SCENES)[7],
+  sound: SOUNDS[8],
 };
 
 export type State = typeof DEFAULT_STATE;
