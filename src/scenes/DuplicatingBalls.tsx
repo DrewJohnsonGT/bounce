@@ -12,32 +12,33 @@ import {
   PERFECTLY_ELASTIC_INF_INTERTIA,
 } from '~/util/shapes';
 
-const SQUARE_SIZE = 20;
-const SQUARE_FORCE = 0.5;
+const BALL_SIZE = 6;
+const BALL_FORCE = 0.05;
 
 const CONTAINER_SIZE = 450;
 const CONTAINER_WALL_THICKNESS = 10;
 
-const CHANCE_OF_SQUARE_SPAWN_ON_COLLISION = 0.1;
-const INITIAL_VELOCITY = 1;
+const INITIAL_VELOCITY = 0.5;
+const BALL_LABEL = 'ball';
 
-const createSquare = (x: number, y: number, color: string) => {
-  return Bodies.rectangle(x, y, SQUARE_SIZE, SQUARE_SIZE, {
+const createBall = (x: number, y: number, color: string) => {
+  return Bodies.circle(x, y, BALL_SIZE, {
     ...PERFECTLY_ELASTIC_INF_INTERTIA,
-    label: 'square',
+    label: BALL_LABEL,
     render: {
       fillStyle: color,
     },
   });
 };
 
-export const BouncingSquares = () => {
+export const DuplicatingBalls = () => {
   const {
     state: { isRunning, sound },
   } = useAppContext();
   const { boxRef, canvasRef, engine, runner } = useEngine({ isRunning });
 
   const bounceSound = useSoundEffect(sound, isRunning);
+  const newBallSound = useSoundEffect('bass-boo.m4a', isRunning);
 
   useEffect(() => {
     const render = Render.create({
@@ -61,64 +62,51 @@ export const BouncingSquares = () => {
       y: CANVAS_HEIGHT / 2,
     });
 
-    const squareBody1 = createSquare(
-      CANVAS_WIDTH / 2 - SQUARE_SIZE,
-      CANVAS_HEIGHT / 2 - SQUARE_SIZE,
+    const ball1 = createBall(
+      CANVAS_WIDTH / 2 - BALL_SIZE,
+      CANVAS_HEIGHT / 2 - BALL_SIZE,
       COLORS.BLUE,
     );
-    const squareBody2 = createSquare(
-      CANVAS_WIDTH / 2 + SQUARE_SIZE,
-      CANVAS_HEIGHT / 2 - SQUARE_SIZE,
+    const ball2 = createBall(
+      CANVAS_WIDTH / 2 + BALL_SIZE,
+      CANVAS_HEIGHT / 2 - BALL_SIZE,
       COLORS.GREEN,
     );
-    const squareBody3 = createSquare(
-      CANVAS_WIDTH / 2 - SQUARE_SIZE,
-      CANVAS_HEIGHT / 2 + SQUARE_SIZE,
+    const ball3 = createBall(
+      CANVAS_WIDTH / 2 - BALL_SIZE,
+      CANVAS_HEIGHT / 2 + BALL_SIZE,
       COLORS.RED,
     );
-    const squareBody4 = createSquare(
-      CANVAS_WIDTH / 2 + SQUARE_SIZE,
-      CANVAS_HEIGHT / 2 + SQUARE_SIZE,
+    const ball4 = createBall(
+      CANVAS_WIDTH / 2 + BALL_SIZE,
+      CANVAS_HEIGHT / 2 + BALL_SIZE,
       COLORS.ORANGE,
     );
-
     Events.on(engine, 'collisionStart', (event) => {
       event.pairs.forEach((pair) => {
         const bodyALabel = pair.bodyA.label;
         const bodyBLabel = pair.bodyB.label;
-        const key = `${bodyALabel}-${bodyBLabel}`;
-        if (key.includes('square')) {
+
+        if (bodyALabel === BALL_LABEL && bodyBLabel === BALL_LABEL) {
+          newBallSound();
+          createNewBall();
+        } else {
           bounceSound();
-        }
-        if (key.includes('static')) {
-          const squareBody = bodyALabel === 'square' ? pair.bodyA : pair.bodyB;
-          if (Math.random() < CHANCE_OF_SQUARE_SPAWN_ON_COLLISION) {
-            Body.setStatic(squareBody, true);
-            squareBody.label = 'static-square';
-            createNewSquare();
-            createNewSquare();
-          }
         }
       });
     });
 
-    World.add(engine.world, [
-      ...squareSides,
-      squareBody1,
-      squareBody2,
-      squareBody3,
-      squareBody4,
-    ]);
-    Body.setVelocity(squareBody4, { x: INITIAL_VELOCITY, y: INITIAL_VELOCITY });
-    Body.setVelocity(squareBody3, {
+    World.add(engine.world, [...squareSides, ball1, ball2, ball3, ball4]);
+    Body.setVelocity(ball4, { x: INITIAL_VELOCITY, y: INITIAL_VELOCITY });
+    Body.setVelocity(ball3, {
       x: -INITIAL_VELOCITY,
       y: INITIAL_VELOCITY,
     });
-    Body.setVelocity(squareBody1, {
+    Body.setVelocity(ball1, {
       x: -INITIAL_VELOCITY,
       y: -INITIAL_VELOCITY,
     });
-    Body.setVelocity(squareBody2, {
+    Body.setVelocity(ball2, {
       x: INITIAL_VELOCITY,
       y: -INITIAL_VELOCITY,
     });
@@ -132,24 +120,24 @@ export const BouncingSquares = () => {
     };
   }, []);
 
-  const createNewSquare = () => {
+  const createNewBall = () => {
     const color = generateRandomColor();
     const position = getRandomPositionInsideSquareContainer({
       containerPosX: CANVAS_WIDTH / 2,
       containerPosY: CANVAS_HEIGHT / 2,
       containerSize: CONTAINER_SIZE,
       containerWallThickness: CONTAINER_WALL_THICKNESS,
-      elementSize: SQUARE_SIZE,
+      elementSize: BALL_SIZE,
     });
-    const squareBody = createSquare(position.x, position.y, color);
+    const squareBody = createBall(position.x, position.y, color);
 
     World.add(engine.world, squareBody);
     Body.applyForce(
       squareBody,
       { x: 0, y: 0 },
       {
-        x: Math.random() < 0.5 ? -SQUARE_FORCE : SQUARE_FORCE,
-        y: Math.random() < 0.5 ? -SQUARE_FORCE : SQUARE_FORCE,
+        x: Math.random() < 0.5 ? -BALL_FORCE : BALL_FORCE,
+        y: Math.random() < 0.5 ? -BALL_FORCE : BALL_FORCE,
       },
     );
   };

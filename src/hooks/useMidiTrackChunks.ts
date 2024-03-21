@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Midi } from '@tonejs/midi';
 import * as Tone from 'tone';
 
-const MIDI_PATH_PREFIX = 'public/midi/';
+const MIDI_PATH_PREFIX = '/midi/';
 
 export const useMidiTrackChunks = ({
   chunkDuration = 0.5,

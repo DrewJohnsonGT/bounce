@@ -7,11 +7,13 @@ import { SquareRace } from '~/scenes/SquareRace';
 import { TrailingRainbow } from '~/scenes/TrailingRainbow';
 import { TrailingRainbows } from '~/scenes/TrailingRainbows';
 import { TrailingSquares } from '~/scenes/TrailingSquares';
+import { DuplicatingBalls } from './DuplicatingBalls';
 
 export const SCENES = {
   BallBattle,
   BouncingSquares,
   BouncingSquaresWithSpin,
+  DuplicatingBalls,
   FillCircle,
   Letters,
   SquareRace,

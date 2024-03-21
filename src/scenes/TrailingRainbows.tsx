@@ -159,7 +159,7 @@ export const TrailingRainbows = () => {
           });
         });
       }
-      const trailColor = getRainbowColor(trailCounter, 0.25);
+      const trailColor = getRainbowColor(trailCounter, 0.1);
       Object.values(trails.current).forEach((trail) => {
         const unpaintedTrail = trail.slice(0)[0];
         const point = unpaintedTrail.position;
