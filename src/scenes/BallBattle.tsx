@@ -19,20 +19,21 @@ enum BallTeam {
   GREEN = 'GREEN',
   PINK = 'PINK',
   DARK_PINK = 'DARK_PINK',
+  DARKER_ORANGE = 'DARKER_ORANGE',
 }
 
 const CONTAINER_SIZE = 500;
 const CONTAINER_WALL_THICKNESS = 10;
 
 const BALL_SIZE = 15;
-const INITIAL_BALL_VELOCITY = 1;
-const BALL_SAME_TEAM_VELOCITY_MULTIPLIER = 1.1;
+const INITIAL_BALL_VELOCITY = 0.75;
+const BALL_SAME_TEAM_VELOCITY_MULTIPLIER = 1.2;
 
 const MAX_ARMOR = 3;
 const MIN_ARMOR_COLOR = COLORS.RED;
 const MAX_ARMOR_COLOR = COLORS.WHITE;
 
-const TEAMS = [BallTeam.GREEN, BallTeam.BLUE];
+const TEAMS = [BallTeam.GREEN, BallTeam.YELLOW];
 
 const lerpColor = (color1: string, color2: string, factor: number): string => {
   const hex = (color: string) => parseInt(color.slice(1), 16);
@@ -96,7 +97,7 @@ export const BallBattle = () => {
     });
 
     const squareSides = createHollowRectangle({
-      color: COLORS.DARKER_ORANGE,
+      color: COLORS.WHITE,
       side1Length: CONTAINER_SIZE,
       side2Length: CONTAINER_SIZE,
       thickness: CONTAINER_WALL_THICKNESS,
