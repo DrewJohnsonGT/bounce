@@ -28,13 +28,14 @@ const SQUARE_COLLISION_CATEGORY = 0x0001;
 const WALL_COLLISION_CATEGORY = 0x0002;
 
 const SQUARE_SIZE = 50;
-const SQUARE_FORCE = 1;
-const FORCE_MULTIPLIER = 0.025; // 0.1, 0.3, 0.5, 0.9
+const SQUARE_FORCE = 3;
+const FORCE_MULTIPLIER = 0.3; // 0.1, 0.3, 0.5, 0.9
 
-const CONTAINER_SIZE = 450;
+const CONTAINER_WIDTH = 450;
+const CONTAINER_HEIGHT = 500;
 const CONTAINER_WALL_THICKNESS = 10;
 
-const TRAIL_MODULO = 3;
+const TRAIL_MODULO = 4;
 let trailCounter = 0;
 
 const createSquare = (x: number, y: number, color: string) => {
@@ -81,34 +82,34 @@ export const TrailingSquares = () => {
         },
       },
       color: COLORS.WHITE,
-      side1Length: CONTAINER_SIZE,
-      side2Length: CONTAINER_SIZE,
+      side1Length: CONTAINER_WIDTH,
+      side2Length: CONTAINER_HEIGHT,
       thickness: CONTAINER_WALL_THICKNESS,
       x: CANVAS_WIDTH / 2,
       y: CANVAS_HEIGHT / 2,
     });
 
     const square1 = createSquare(
-      CANVAS_WIDTH / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
-      CANVAS_HEIGHT / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
+      CANVAS_WIDTH / 2 - CONTAINER_WIDTH / 2 + SQUARE_SIZE / 2,
+      CANVAS_HEIGHT / 2 - CONTAINER_HEIGHT / 2 + SQUARE_SIZE / 2,
       COLORS.RED,
     );
 
     const square2 = createSquare(
-      CANVAS_WIDTH / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
-      CANVAS_HEIGHT / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
+      CANVAS_WIDTH / 2 + CONTAINER_WIDTH / 2 - SQUARE_SIZE / 2,
+      CANVAS_HEIGHT / 2 + CONTAINER_HEIGHT / 2 - SQUARE_SIZE / 2,
       COLORS.BLUE,
     );
 
     const square3 = createSquare(
-      CANVAS_WIDTH / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
-      CANVAS_HEIGHT / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
+      CANVAS_WIDTH / 2 - CONTAINER_WIDTH / 2 + SQUARE_SIZE / 2,
+      CANVAS_HEIGHT / 2 + CONTAINER_HEIGHT / 2 - SQUARE_SIZE / 2,
       COLORS.GREEN,
     );
 
     const square4 = createSquare(
-      CANVAS_WIDTH / 2 + CONTAINER_SIZE / 2 - SQUARE_SIZE / 2,
-      CANVAS_HEIGHT / 2 - CONTAINER_SIZE / 2 + SQUARE_SIZE / 2,
+      CANVAS_WIDTH / 2 + CONTAINER_WIDTH / 2 - SQUARE_SIZE / 2,
+      CANVAS_HEIGHT / 2 - CONTAINER_HEIGHT / 2 + SQUARE_SIZE / 2,
       COLORS.DARKER_ORANGE,
     );
 
@@ -116,10 +117,22 @@ export const TrailingSquares = () => {
 
     World.add(engine.world, [...squareSides, ...squares]);
 
-    Body.setVelocity(square1, { x: SQUARE_FORCE, y: SQUARE_FORCE * FORCE_MULTIPLIER });
-    Body.setVelocity(square2, { x: -SQUARE_FORCE * FORCE_MULTIPLIER, y: -SQUARE_FORCE });
-    Body.setVelocity(square3, { x: SQUARE_FORCE, y: SQUARE_FORCE * FORCE_MULTIPLIER });
-    Body.setVelocity(square4, { x: -SQUARE_FORCE * FORCE_MULTIPLIER, y: -SQUARE_FORCE });
+    Body.setVelocity(square1, {
+      x: SQUARE_FORCE * FORCE_MULTIPLIER,
+      y: SQUARE_FORCE * FORCE_MULTIPLIER,
+    });
+    Body.setVelocity(square2, {
+      x: -SQUARE_FORCE * FORCE_MULTIPLIER,
+      y: -SQUARE_FORCE * FORCE_MULTIPLIER,
+    });
+    Body.setVelocity(square3, {
+      x: SQUARE_FORCE * FORCE_MULTIPLIER,
+      y: SQUARE_FORCE * FORCE_MULTIPLIER,
+    });
+    Body.setVelocity(square4, {
+      x: -SQUARE_FORCE * FORCE_MULTIPLIER,
+      y: -SQUARE_FORCE * FORCE_MULTIPLIER,
+    });
 
     const secondaryCanvas = document.getElementById(
       'secondary-canvas',

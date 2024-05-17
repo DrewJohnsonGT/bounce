@@ -7,7 +7,7 @@ const DEFAULT_STATE = {
   isRunning: false,
   midi: MIDI[2],
   selectedMap: 3,
-  selectedScene: Object.keys(SCENES)[0],
+  selectedScene: Object.keys(SCENES)[9],
   sound: SOUNDS[9],
 };
 
