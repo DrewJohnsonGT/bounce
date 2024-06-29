@@ -30,7 +30,7 @@ const WALL_COLLISION_CATEGORY = 0x0002;
 const SQUARE_SIZE = 50;
 const SQUARE_FORCE = 5;
 const SQUARE_BORDER_COLOR = COLORS.BLACK;
-const shouldDrawBorders = false;
+const shouldDrawBorders = true;
 const FORCE_MULTIPLIER = 0.3; // 0.1, 0.3, 0.5, 0.9
 
 const CONTAINER_SIZE = 500;
